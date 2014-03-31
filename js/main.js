@@ -149,21 +149,33 @@ function channelsCallback(data) {
     } else {
         console.log(data[0]);
         var ul = $('<ul>').appendTo('#channels');
+
         var results = data; // results array already. Why?
         $.each(results, function(index, channel) {
             ul.append(
-                $(document.createElement('li')).text(channel.title)
+                $(document.createElement('li')).text(channel.title) // TODO: use jQuery
             );
             var ul2 = $('<ul>').appendTo(ul);
             $.each(channel, function(index, item) {
                 ul2.append(
-                    $(document.createElement('li')).text(item)
+                    '<li .outline>' + item + '</li>'
                 );
             });
         });
     }
 
     $('#channels').fadeIn();
+
+    //hide everything
+    $('.outline li > ul').hide();
+    //activate class "expanded"
+    $('.outline li > .expanded + ul').show('normal');
+    $('.outline li > a').click(function() {
+        //hide everything
+        $(this).find('ul').hide();
+        //toggle next ul
+        $(this).toggleClass('expanded').toggleClass('collapsed').next('ul').toggle('normal');
+    });
 }
 
 function videosCallback(data) {
