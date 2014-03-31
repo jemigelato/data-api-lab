@@ -53,7 +53,7 @@ function searchCallback(data) {
             success: infoCallback
         });
     } else {
-        $('#title').append('Search results for \"' + user + '\"');
+        $('#title').append('Search results for: ' + user);
         $('#message').append(data.length + " users found.");
         var ul = $('<ul>').appendTo('#info');
         var results = data;
