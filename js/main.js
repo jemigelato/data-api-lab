@@ -44,20 +44,14 @@ function searchCallback(data) {
     } else if (data.length === 1) {
         console.log(data[0]);
 
-        query = "/getInfo?key=" + apikey;
-        url = userSearchUrl + user + query;
-        // send off the query
-        $.ajax({
-            url: url,
-            dataType: "jsonp",
-            success: infoCallback
-        });
-    } else {
-        $('#title').append('Search results for: ' + user);
-        $('#message').append(data.length + " users found.");
-        var ul = $('<ul>').appendTo('#info');
-        var results = data;
-        $.each(results, function(index, user) {
+        query = "/getInfo?key=" + apikey;         url = userSearchUrl + user +
+query;         // send off the query         $.ajax({             url: url,
+dataType: "jsonp",             success: infoCallback         });     } else {
+$('#title').append(             $('<h3>').append('Search results for: ' +
+user)         );         $('#message').append(
+$('<h3>').append(data.length + " users found.")         );         var ul =
+$('<ul>').appendTo('#info');         var results = data;
+$.each(results, function(index, user) {
 
             var anchor = $('<a></a>')
                 .attr("href", "#")
@@ -130,7 +124,7 @@ function infoCallback(data) {
         );
         $('#message').fadeIn();
         $('#info').append(
-            $('<h1>').append('getInfo')
+            $('<h3>').append('getInfo')
         );
         var ul = $('<ul>').appendTo('#info');
 
@@ -148,7 +142,7 @@ function infoCallback(data) {
 
 function channelsCallback(data) {
     $('#channels').append(
-        $('<h1>').append('listAllChannels')
+        $('<h3>').append('listAllChannels')
     );
     if (data === null) {
         $('#channels').append("No channels found");
@@ -186,7 +180,7 @@ function channelsCallback(data) {
 
 function videosCallback(data) {
     $('#videos').append(
-        $('<hi>').append('listAllVideos')
+        $('<h3>').append('listAllVideos')
     );
     if (data === null) {
         $('#videos').append("No videos found");
@@ -212,7 +206,7 @@ function videosCallback(data) {
 
 function commentsCallback(data) {
     $('#comments').append(
-        $('<hi>').append('getComments')
+        $('<h3>').append('getComments')
     );
     if (data === null || $.isEmptyObject(data)) {
         $('#comments').append("No comments found");
