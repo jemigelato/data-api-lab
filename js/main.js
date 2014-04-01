@@ -125,14 +125,18 @@ function infoCallback(data) {
         });
 
 
-        $('#message').append(data.userName);
+        $('#message').append(
+            $('<h1>').append(data.userName)
+        );
         $('#message').fadeIn();
-        $('#info').append("<h1>getInfo</h1>");
+        $('#info').append(
+            $('<h1>').append('getInfo')
+        );
         var ul = $('<ul>').appendTo('#info');
 
         $.each(results, function(index, user) {
             ul.append(
-                $(document.createElement('li')).text(user)
+                $('<li>').append(user)
             );
         });
         //var version = data.version;
@@ -143,7 +147,9 @@ function infoCallback(data) {
 }
 
 function channelsCallback(data) {
-    $('#channels').append("<h1>listAllChannels</h1>");
+    $('#channels').append(
+        $('<h1>').append('listAllChannels')
+    );
     if (data === null) {
         $('#channels').append("No channels found");
     } else {
@@ -153,12 +159,12 @@ function channelsCallback(data) {
         var results = data; // results array already. Why?
         $.each(results, function(index, channel) {
             ul.append(
-                $(document.createElement('li')).text(channel.title) // TODO: use jQuery
+                $('<li>').append(channel.title)
             );
             var ul2 = $('<ul>').appendTo(ul);
             $.each(channel, function(index, item) {
                 ul2.append(
-                    '<li .outline>' + item + '</li>'
+                    $('<li>').append(item)
                 );
             });
         });
@@ -179,7 +185,9 @@ function channelsCallback(data) {
 }
 
 function videosCallback(data) {
-    $('#videos').append("<h1>listAllVideos</h1>");
+    $('#videos').append(
+        $('<hi>').append('listAllVideos')
+    );
     if (data === null) {
         $('#videos').append("No videos found");
     } else {
@@ -188,12 +196,12 @@ function videosCallback(data) {
         var results = data;
         $.each(results, function(index, video) {
             ul.append(
-                $(document.createElement('li')).text(video.title)
+                $('<li>').append(video.title)
             );
             var ul2 = $('<ul>').appendTo(ul);
             $.each(video, function(index, item) {
                 ul2.append(
-                    $(document.createElement('li')).text(item)
+                    $('<li>').append(item)
                 );
             });
         });
@@ -203,7 +211,9 @@ function videosCallback(data) {
 }
 
 function commentsCallback(data) {
-    $('#comments').append("<h1>getComments</h1>");
+    $('#comments').append(
+        $('<hi>').append('getComments')
+    );
     if (data === null || $.isEmptyObject(data)) {
         $('#comments').append("No comments found");
     } else {
@@ -212,12 +222,12 @@ function commentsCallback(data) {
         var results = data;
         $.each(results, function(index, comment) {
             ul.append(
-                $(document.createElement('li')).text(comment.createdAt)
+                $('<li>').append(comment.createdAt)
             );
             var ul2 = $('<ul>').appendTo(ul);
             $.each(comment, function(index, item) {
                 ul2.append(
-                    $(document.createElement('li')).text(item)
+                    $('<li>').append(item)
                 );
             });
         });
