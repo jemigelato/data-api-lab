@@ -44,15 +44,23 @@ function searchCallback(data) {
     } else if (data.length === 1) {
         console.log(data[0]);
 
-        query = "/getInfo?key=" + apikey;         url = userSearchUrl + user +
-query;         // send off the query         $.ajax({             url: url,
-dataType: "jsonp",             success: infoCallback         });     } else {
-$('#title').append(             $('<h3>').append('Search results for: ' +
-user)         );         $('#message').append(
-$('<h3>').append(data.length + " users found.")         );         var ul =
-$('<ul>').appendTo('#info');         var results = data;
-$.each(results, function(index, user) {
-
+        query = "/getInfo?key=" + apikey;
+        url = userSearchUrl + user +
+            query; // send off the query
+        $.ajax({
+            url: url,
+            dataType: "jsonp",
+            success: infoCallback
+        });
+    } else {
+        $('#title').append($('<h3>').append('Search results for: ' +
+            user));
+        $('#message').append(
+            $('<h3>').append(data.length + " users found."));
+        var ul =
+            $('<ul>').appendTo('#info');
+        var results = data;
+        $.each(results, function(index, user) {
             var anchor = $('<a></a>')
                 .attr("href", "#")
                 .append(user.name)
