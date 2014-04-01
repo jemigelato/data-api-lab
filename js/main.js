@@ -2,7 +2,8 @@ var apikey = "19670727DCA7275886D885BFDD3C2B98";
 var baseUrl = "http://api.ustream.tv/json";
 
 var userSearchUrl = baseUrl + '/user/';
-var user = "";
+var channelSearchUrl = baseUrl + '/channel/';
+var searchString = "";
 var query = "";
 var url = "";
 var hitCount = 0;
@@ -11,10 +12,10 @@ $(document).ready(function() {
     $("form").submit(function(event) {
         clearAll();
         event.preventDefault(); //prevent form from submitting
-        user = $("input:first").val();
-        console.log(user);
+        searchString = $("input:first").val();
+        console.log(searchString);
 
-        query = "all/search/username:like:" + user + "?key=" + apikey;
+        query = "all/search/username:like:" + searchString + "?key=" + apikey;
         url = userSearchUrl + query;
         console.log(url);
         // send off the query
@@ -40,12 +41,12 @@ function clearAll() {
 function searchCallback(data) {
 
     if (data === null) {
-        $('#title').append("Sorry, no results found for \"" + user + "\"");
+        $('#title').append("Sorry, no results found for \"" + searchString + "\"");
     } else if (data.length === 1) {
         console.log(data[0]);
 
         query = "/getInfo?key=" + apikey;
-        url = userSearchUrl + user +
+        url = userSearchUrl + searchString +
             query; // send off the query
         $.ajax({
             url: url,
@@ -54,7 +55,7 @@ function searchCallback(data) {
         });
     } else {
         $('#title').append($('<h3>').append('Search results for: ' +
-            user));
+            searchString));
         $('#message').append(
             $('<h3>').append(data.length + " users found."));
         var ul =
@@ -100,7 +101,7 @@ function infoCallback(data) {
         hitCount = 1;
 
         query = "/listAllChannels?key=" + apikey;
-        url = userSearchUrl + user + query;
+        url = userSearchUrl + searchString + query;
         // send off the query
         $.ajax({
             url: url,
@@ -109,7 +110,7 @@ function infoCallback(data) {
         });
 
         query = "/listAllVideos?key=" + apikey;
-        url = userSearchUrl + user + query;
+        url = userSearchUrl + searchString + query;
         // send off the query
         $.ajax({
             url: url,
@@ -118,7 +119,7 @@ function infoCallback(data) {
         });
 
         query = "/getComments?key=" + apikey;
-        url = userSearchUrl + user + query;
+        url = userSearchUrl + searchString + query;
         // send off the query
         $.ajax({
             url: url,
