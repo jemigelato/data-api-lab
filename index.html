@@ -12,8 +12,18 @@
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
         <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
+        <!-- <link rel="stylesheet" href="css/main.css"> -->
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css" rel="stylesheet">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
         <style type="text/css">
             body {
@@ -32,17 +42,18 @@
                 <input type="submit" id="search-submit" value="Search" />
             </fieldset>
         </form>
-        <div id="title" style="display: none;"></div>
-        <div id="message" style="display: none;"></div>
-        <div id="info" style="display: none;"></div>
-        <div id="channels" style="display: none;"></div>
-        <div id="videos" style="display: none;"></div>
-        <div id="comments" style="display: none;"></div>
+        <div id="content">
+            <div id="title" style="display: none;"></div>
+            <div id="search-results" style="display: none;">
+                <div id="user-results"></div>
+                <div id="channel-results"></div>
+            </div>
+            <div id="info" style="display: none;"></div>
+            <div id="channels" style="display: none;"></div>
+            <div id="videos" style="display: none;"></div>
+            <div id="comments" style="display: none;"></div>
+        </div>
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <!-- <script>

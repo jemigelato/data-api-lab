@@ -41,11 +41,14 @@ function userSearch(event) {
 
 function clearAll() {
     $('#title').empty();
-    $('#message').empty();
+    $('#user-results').empty();
+    $('#channel-results').empty();
     $('#info').empty();
     $('#channels').empty();
     $('#videos').empty();
     $('#comments').empty();
+    channelSearched = false;
+    userSearched = false;
     userData = null;
     channelData = null;
 }
@@ -75,33 +78,26 @@ function searchCallback(data) {
         channelData = data;
     }
 
-    if (data === null) {
-        if (userSearched && channelSearched) {
-            $('#title').append("Sorry, no results found for \"" + searchString + "\"");
-        }
+    if (userSearched && channelSearched) {
 
-    } else if (data.length === 1) {
-        console.log(data[0]);
-        // only call this when we are sure we only have one hit
-        // query = "/getInfo?key=" + apikey;
-        // url = userSearchUrl + searchString +
-        //     query; // send off the query
-        // $.ajax({
-        //     url: url,
-        //     dataType: "jsonp",
-        //     success: infoCallback
-        // });
+        if (userData === null && channelData === null) {
 
-        if (userSearched && channelSearched) {
+            $('#title').append("Sorry, no results found for: " + searchString);
+
+        } else if ((userData.length === 1 && channelData === null)
+            || (userData === null && channelData.length === 1)) {
+
             if (userData != null) {
+                console.log(userData[0]);
                 query = "/getInfo?key=" + apikey;
                 url = userSearchUrl + searchString + query;
                 $.ajax({
                     url: url,
                     dataType: "jsonp",
-                    success: infoCallback
+                    success: userInfoCallback
                 });
             } else {
+                console.log(channelData[0]);
                 query = "/getInfo?key=" + apikey;
                 url = channelSearchUrl + searchString + query;
                 $.ajax({
@@ -110,49 +106,73 @@ function searchCallback(data) {
                     success: channelInfoCallback
                 });
             }
-            channelSearched = false;
-            userSearched = false;
-        }
 
-    } else {
+        } else {
 
-        if (userSearched && channelSearched) {
-            $('#title').append($('<h3>').append('Search results for: ' +
-                searchString));
+            $('#title').append(
+                $('<h3>').append('Search results for: ' + searchString)
+            );
             var userLen = (userData == null) ? 0 : userData.length;
             var channelLen = (channelData == null) ? 0 : channelData.length;
 
-            $('#message').append(
-                $('<div>').append(
-                    "users found: " + userLen
-                )
-            ).append(
-                $('<div>').append(
-                    "channels found: " + channelLen
+            $('#title').append(
+                $('<ul>').append(
+                    $('<li>').append(
+                        "users found: " + userLen
+                    )
+                ).append(
+                    $('<li>').append(
+                        "channels found: " + channelLen
+                    )
                 )
             );
-            var ul = $('<ul>').appendTo('#info');
-            var results = data;
-            $.each(results, function(index, user) {
-                var anchor = $('<a></a>')
-                    .attr("href", "#")
-                    .append(user.name)
-                    .click(function() {
-                        openUser(user.name);
-                    });
-                ul.append($('<li>')
-                    .append(anchor)
+
+            if (userData != null) {
+                $('#user-results').append(
+                    $('<h3>').append('User Results')
                 );
-            });
-            channelSearched = false;
-            userSearched = false;
+                var ul = $('<ul>').appendTo('#user-results');
+                var results = userData;
+                $.each(results, function(index, user) {
+                    var anchor = $('<a></a>')
+                        .attr("href", "#")
+                        .append(user.name)
+                        .click(function() {
+                            openUser(user.name);
+                        });
+                    ul.append($('<li>')
+                        .append(anchor)
+                    );
+                });
+            }
+
+            if (channelData != null) {
+                $('#channel-results').append(
+                    $('<h3>').append('Channel Results')
+                );
+                var ul = $('<ul>').appendTo('#channel-results');
+                var results = channelData;
+                $.each(results, function(index, channel) {
+                    var anchor = $('<a></a>')
+                        .attr("href", "#")
+                        .append(channel.title)
+                        .click(function() {
+                            openChannel(channel.id);
+                        });
+                    ul.append($('<li>')
+                        .append(anchor)
+                    );
+                });
+            }
+
         }
     }
 
 
     $('#title').fadeIn();
-    $('#message').fadeIn();
     $('#info').fadeIn();
+    $('#search-results').fadeIn();
+    $('#channel-results').fadeIn();
 }
 
 function openUser(userName) { // TODO: back key handling
@@ -162,17 +182,28 @@ function openUser(userName) { // TODO: back key handling
     $.ajax({
         url: url,
         dataType: "jsonp",
-        success: infoCallback
+        success: userInfoCallback
+    });
+}
+
+function openChannel(chId) { // TODO: back key handling
+    query = "/getInfo?key=" + apikey;
+    url = channelSearchUrl + chId + query;
+    // send off the query
+    $.ajax({
+        url: url,
+        dataType: "jsonp",
+        success: channelInfoCallback
     });
 }
 
 function channelInfoCallback(data) {
     clearAll();
     var results = data; // results array already. Why?
-    $('#message').append(
+    $('#title').append(
         $('<h1>').append(data.title)
     );
-    $('#message').fadeIn();
+    $('#title').fadeIn();
     $('#info').append(
         $('<h3>').append('getInfo')
     );
@@ -184,18 +215,27 @@ function channelInfoCallback(data) {
         );
     });
     $('#info').fadeIn();
+
+    query = "/getComments?key=" + apikey;
+    url = channelSearchUrl + searchString + query;
+    // send off the query
+    $.ajax({
+        url: url,
+        dataType: "jsonp",
+        success: channelCommentsCallback // TODO
+    });
 }
 
-function infoCallback(data) {
+function userInfoCallback(data) {
     clearAll();
     var results = data; // results array already. Why?
     if (results === null) {
-        $('#message').append("No user found.");
+        $('#title').append("No user found.");
     } else {
         console.log(data[0]);
 
         query = "/listAllChannels?key=" + apikey;
-        url = userSearchUrl + searchString + query;
+        url = userSearchUrl + searchString + query; // TODO: Don't use searchString
         // send off the query
         $.ajax({
             url: url,
@@ -222,10 +262,10 @@ function infoCallback(data) {
         });
 
 
-        $('#message').append(
+        $('#title').append(
             $('<h1>').append(data.userName)
         );
-        $('#message').fadeIn();
+        $('#title').fadeIn();
         $('#info').append(
             $('<h3>').append('getInfo')
         );
