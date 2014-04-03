@@ -35,13 +35,16 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
-        <form action="" id="search-form">
-            <fieldset>
-                <input type="search" id="search" name="search"  placeholder="Enter username" value="jbantola02" autofocus/>
-                <input type="submit" id="search-submit" value="Search" />
-            </fieldset>
-        </form>
+        <nav class="navbar navbar-default" role="navigation">
+            <div id="searchfield">
+                <form class="navbar-form navbar-left" role="search" id="search-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search" name="search"  placeholder="user or channel name" value="jbantola02" autofocus>
+                    </div>
+                    <button type="submit" class="btn btn-default">Search</button>
+                </form>
+            </div>
+        </nav>
         <div id="content">
             <div id="title" style="display: none;"></div>
             <div id="search-results" style="display: none;">
