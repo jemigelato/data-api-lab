@@ -84,7 +84,7 @@ function searchCallback(data) {
 
             $('#title').append("Sorry, no results found for: " + searchString);
 
-        } else if ((userData.length === 1 && channelData === null)
+        } else if ((userData != null && userData.length === 1 && channelData === null)
             || (userData === null && channelData.length === 1)) {
 
             if (userData != null) {
