@@ -21,6 +21,17 @@ $(document).ready(function() {
         channelSearch();
     });
 
+    $(document.body).on("click", '.btn-channel', function(e) {
+        var target = $(e.currentTarget);
+        var channel = target[0].id.match(/ch-([a-zA-Z0-9\-]*)/);
+
+        if (channel && channel[1]) {
+            openChannel(channel[1]);
+        }
+
+        e.preventDefault();
+    });
+
 });
 
 function userSearch(event) {
@@ -312,7 +323,10 @@ function channelsCallback(data) {
         $.each(results, function(index, channel) {
             ul.append(
                 $('<li>').append(channel.title)
-            );
+            ).append($('<button>')
+                .attr( { type:"button", class:"btn btn-default btn-sm btn-channel", id:"ch-" + channel.id } )
+                .append('View channel info <span class="glyphicon glyphicon-chevron-right"></span>'))
+            ;
             var ul2 = $('<ul>').appendTo(ul);
             $.each(channel, function(index, item) {
                 ul2.append(
