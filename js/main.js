@@ -44,6 +44,9 @@ function clearAll() {
     $('#user-results').empty();
     $('#channel-results').empty();
     $('#info').empty();
+    $('#info-panel').hide();
+    $('#info-heading').empty();
+    $('#info-body').empty();
     $('#channels').empty();
     $('#videos').empty();
     $('#comments').empty();
@@ -266,19 +269,27 @@ function userInfoCallback(data) {
             $('<h1>').append(data.userName)
         );
         $('#title').fadeIn();
-        $('#info').append(
+        $('#info-heading').append(
             $('<h3>').append('getInfo')
         );
-        var ul = $('<ul>').appendTo('#info');
 
-        $.each(results, function(index, user) {
-            ul.append(
-                $('<li>').append(user)
-            );
-        });
-        //var version = data.version;
-        //$('body').append(version);
-        $('#info').fadeIn();
+        $('#info-body').append($('<p>').append($('<strong>').append("ID:")
+            ).append($('<span>').append(" " + results.id))
+
+        ).append($('<p>').append($('<strong>').append("Registered At:")
+            ).append($('<span>').append(" " + results.registeredAt))
+
+        ).append($('<p>').append($('<strong>').append("About:")
+            ).append($('<span>').append(" " + results.about))
+
+        ).append($('<p>').append($('<strong>').append("Website:")
+            ).append($('<span>').append(" " + results.website))
+
+        ).append($('<p>').append($('<strong>').append("URL:")
+            ).append($('<span>').append(" " + results.url))
+        );
+
+        $('#info-panel').fadeIn();
     }
 
 }

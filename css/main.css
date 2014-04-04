@@ -99,6 +99,8 @@ textarea {
 * { margin: 0; padding: 0; }
 fieldset { border: none }
 
+p { margin: 0 }
+
 #search-form {
 }
 #search {
