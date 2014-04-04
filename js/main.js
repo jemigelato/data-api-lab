@@ -273,20 +273,24 @@ function userInfoCallback(data) {
             $('<h3>').append('getInfo')
         );
 
-        $('#info-body').append($('<p>').append($('<strong>').append("ID:")
-            ).append($('<span>').append(" " + results.id))
+        $('#info-body').append($('<p>').append($('<strong>').append("ID: ")
+            ).append($('<span>').append(results.id))
 
-        ).append($('<p>').append($('<strong>').append("Registered At:")
-            ).append($('<span>').append(" " + results.registeredAt))
+        ).append($('<p>').append($('<strong>').append("Registered At: ")
+            ).append($('<span>').append(results.registeredAt))
 
-        ).append($('<p>').append($('<strong>').append("About:")
-            ).append($('<span>').append(" " + results.about))
+        ).append($('<p>').append($('<strong>').append("About: ")
+            ).append($('<span>').append(results.about))
 
-        ).append($('<p>').append($('<strong>').append("Website:")
-            ).append($('<span>').append(" " + results.website))
+        ).append($('<p>').append($('<strong>').append("Website: ")
+            ).append($('<span>').append(results.website))
 
-        ).append($('<p>').append($('<strong>').append("URL:")
-            ).append($('<span>').append(" " + results.url))
+        ).append($('<p>').append($('<strong>').append("URL: ")
+            ).append($('<span>').append(
+                $('<a>').attr( {'href': results.url, 'target': '_blank' }
+                    ).append(results.url)
+                )
+            )
         );
 
         $('#info-panel').fadeIn();
