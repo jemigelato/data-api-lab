@@ -145,18 +145,22 @@ function searchCallback(data) {
                 $('#user-results').append(
                     $('<h3>').append('User Results')
                 );
-                var ul = $('<ul>').appendTo('#user-results');
+                var list = $('<ul>').appendTo('#user-results');
                 var results = userData;
                 $.each(results, function(index, user) {
-                    var anchor = $('<a></a>')
+                    var anchor = $('<a>')
                         .attr("href", "#")
                         .append(user.name)
                         .click(function() {
                             openUser(user.name);
                         });
-                    ul.append($('<li>')
-                        .append(anchor)
-                    );
+
+                    var listItem = $('<li>').append(anchor);
+                    listItem.append($('<span>')
+                        .append(" (" + user.id + ") ")
+                    ).addClass('list-group-item');
+                    list.append(listItem)
+                        .addClass('list-group');
                 });
             }
 
@@ -164,18 +168,21 @@ function searchCallback(data) {
                 $('#channel-results').append(
                     $('<h3>').append('Channel Results')
                 );
-                var ul = $('<ul>').appendTo('#channel-results');
+                var list = $('<ul>').appendTo('#channel-results');
                 var results = channelData;
                 $.each(results, function(index, channel) {
-                    var anchor = $('<a></a>')
+                    var anchor = $('<a>')
                         .attr("href", "#")
                         .append(channel.title)
                         .click(function() {
                             openChannel(channel.id);
                         });
-                    ul.append($('<li>')
-                        .append(anchor)
-                    );
+                    var listItem = $('<li>').append(anchor);
+                    listItem.append($('<span>')
+                        .append(" (" + channel.id + ") ")
+                    ).addClass('list-group-item');
+                    list.append(listItem)
+                        .addClass('list-group');
                 });
             }
 
