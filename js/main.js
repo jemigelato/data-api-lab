@@ -222,20 +222,19 @@ function channelInfoCallback(data) {
     clearAll();
     var results = data; // results array already. Why?
 
-    $('#title').append(
-        $('<h1>').append(data.title)
-    );
+    var anchor = '',
+        text = ''
+        image = ''
+        thumb = '';
+
+    $('<h1>', {text: results.title}).appendTo('#title');
     $('#title').fadeIn();
 
-    $('#info-heading').append(
-        $('<h3>').append('getInfo')
-    );
+    $('<h3>', {text: "getInfo"}).appendTo('#info-heading');
 
-    var anchor = '',
-        text = '';
     setChannelRow("ID: ", results.id, '#info-body');
     setChannelRow("User ID: ", results.user.id, '#info-body');
-    setChannelRow("User Username: ", results.user.username, '#info-body');
+    setChannelRow("User Username: ", results.user.userName, '#info-body');
     anchor = $('<a>', {
         href: results.user.url,
         text: results.user.url,
@@ -248,6 +247,27 @@ function channelInfoCallback(data) {
     setChannelRow("Status: ", results.status, '#info-body');
     setChannelRow("Created At: ", results.createdAt, '#info-body');
     setChannelRow("Last Streamed At: ", results.lastStreamedAt, '#info-body');
+    anchor = $('<a>', {
+        href: results.imageUrl.small,
+        target: "_blank"
+    });
+    thumb = $('<img>', {
+        src: results.imageUrl.small,
+        alt: "small thumbnail"
+    });
+    anchor.append(thumb);
+    setChannelRow("Image (Small): ", anchor, '#info-body', true);
+
+    anchor = $('<a>', {
+        href: results.imageUrl.medium,
+        target: "_blank"
+    });
+    thumb = $('<img>', {
+        src: results.imageUrl.medium,
+        alt: "small thumbnail"
+    });
+    anchor.append(thumb);
+    setChannelRow("Image (Medium): ", anchor, '#info-body', true);
     setChannelRow("Rating: ", results.rating, '#info-body');
     text = $('<input>', {
         type: 'text',
@@ -288,11 +308,12 @@ function channelInfoCallback(data) {
     });
 }
 
-function setChannelRow(label, value, selector) {
-    var label = $('<strong>').append(label);
-    var value = $('<span>').append(value);
+function setChannelRow(label, value, selector, twoRows) {
+    var lab = $('<strong>').append(label);
+    var val = (typeof twoRows != 'undefined') ? $('<div>') : $('<span>');
+    val.append(value);
     var row = $('<p>').appendTo(selector);
-    row.append(label).append(value);
+    row.append(lab).append(val);
 }
 
 function userInfoCallback(data) {
@@ -455,4 +476,8 @@ function commentsCallback(data) {
     }
 
     $('#comments').fadeIn();
+}
+
+function channelCommentsCallback(data) {
+
 }
