@@ -221,21 +221,62 @@ function openChannel(chId) { // TODO: back key handling
 function channelInfoCallback(data) {
     clearAll();
     var results = data; // results array already. Why?
+
     $('#title').append(
         $('<h1>').append(data.title)
     );
     $('#title').fadeIn();
-    $('#info').append(
+
+    $('#info-heading').append(
         $('<h3>').append('getInfo')
     );
-    var ul = $('<ul>').appendTo('#info');
 
-    $.each(results, function(index, item) {
-        ul.append(
-            $('<li>').append(item)
-        );
+    var anchor = '',
+        text = '';
+    setChannelRow("ID: ", results.id, '#info-body');
+    setChannelRow("User ID: ", results.user.id, '#info-body');
+    setChannelRow("User Username: ", results.user.username, '#info-body');
+    anchor = $('<a>', {
+        href: results.user.url,
+        text: results.user.url,
+        target: "_blank"
     });
-    $('#info').fadeIn();
+    setChannelRow("User URL: ", anchor, '#info-body');
+    setChannelRow("Description: ", results.description, '#info-body');
+    anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
+    setChannelRow("URL: ", anchor, '#info-body');
+    setChannelRow("Status: ", results.status, '#info-body');
+    setChannelRow("Created At: ", results.createdAt, '#info-body');
+    setChannelRow("Last Streamed At: ", results.lastStreamedAt, '#info-body');
+    setChannelRow("Rating: ", results.rating, '#info-body');
+    text = $('<input>', {
+        type: 'text',
+        value: results.embedTag,
+        disabled: true
+    });
+    setChannelRow("Embed Tag: ", text, '#info-body');
+    anchor = $('<a>', {
+        href: results.embedTagSourceUrl,
+        text: results.embedTagSourceUrl,
+        target: "_blank"
+    });
+    setChannelRow("Embed Tag Source URL: ", anchor, '#info-body');
+    setChannelRow("Has Tags: ", results.hasTags, '#info-body');
+    setChannelRow("Number of Comments: ", results.numberOf.comments, '#info-body');
+    setChannelRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
+    setChannelRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
+    setChannelRow("Number of Views: ", results.numberOf.views, '#info-body');
+    setChannelRow("Number of Tags: ", results.numberOf.tags, '#info-body');
+    setChannelRow("Tags: ", results.tags, '#info-body');
+    setChannelRow("Social Stream Hashtag: ", results.socialStream.hashtag, '#info-body');
+    text = $('<input>', {
+        type: 'text',
+        value: results.chat.embedTag,
+        disabled: true
+    });
+    setChannelRow("Chat Embed Tag: ", text, '#info-body');
+
+    $('#info-panel').fadeIn();
 
     query = "/getComments?key=" + apikey;
     url = channelSearchUrl + searchString + query;
@@ -245,6 +286,13 @@ function channelInfoCallback(data) {
         dataType: "jsonp",
         success: channelCommentsCallback // TODO
     });
+}
+
+function setChannelRow(label, value, selector) {
+    var label = $('<strong>').append(label);
+    var value = $('<span>').append(value);
+    var row = $('<p>').appendTo(selector);
+    row.append(label).append(value);
 }
 
 function userInfoCallback(data) {
