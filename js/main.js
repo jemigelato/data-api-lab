@@ -32,6 +32,17 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
+    $(document.body).on("click", '.btn-user', function(e) {
+        var target = $(e.currentTarget);
+        var user = target[0].id.match(/us-([a-zA-Z0-9\-]*)/);
+
+        if (user && user[1]) {
+            openUser(user[1]);
+        }
+
+        e.preventDefault();
+    });
+
 });
 
 function userSearch(event) {
@@ -234,7 +245,12 @@ function channelInfoCallback(data) {
 
     setChannelRow("ID: ", results.id, '#info-body');
     setChannelRow("User ID: ", results.user.id, '#info-body');
-    setChannelRow("User Username: ", results.user.userName, '#info-body');
+    anchor = $('<a>', {
+        href: results.user.userName,
+        text: results.user.userName,
+        target: ""
+    });
+    setChannelRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
     anchor = $('<a>', {
         href: results.user.url,
         text: results.user.url,
@@ -308,10 +324,18 @@ function channelInfoCallback(data) {
     });
 }
 
-function setChannelRow(label, value, selector, twoRows) {
+function setChannelRow(label, value, selector, twoRows, eclass, eid) {
     var lab = $('<strong>').append(label);
+
     var val = (typeof twoRows != 'undefined') ? $('<div>') : $('<span>');
     val.append(value);
+
+    var cla = (typeof eclass != 'undefined') ? eclass : "";
+    val.addClass(cla);
+
+    var valId = (typeof eid != 'undefined') ? eid : "";
+    val.attr( "id", valId );
+
     var row = $('<p>').appendTo(selector);
     row.append(lab).append(val);
 }
@@ -325,7 +349,7 @@ function userInfoCallback(data) {
         console.log(data[0]);
 
         query = "/listAllChannels?key=" + apikey;
-        url = userSearchUrl + searchString + query; // TODO: Don't use searchString
+        url = userSearchUrl + data.id + query;
         // send off the query
         $.ajax({
             url: url,
@@ -334,7 +358,7 @@ function userInfoCallback(data) {
         });
 
         query = "/listAllVideos?key=" + apikey;
-        url = userSearchUrl + searchString + query;
+        url = userSearchUrl + data.id + query;
         // send off the query
         $.ajax({
             url: url,
@@ -343,7 +367,7 @@ function userInfoCallback(data) {
         });
 
         query = "/getComments?key=" + apikey;
-        url = userSearchUrl + searchString + query;
+        url = userSearchUrl + data.id + query;
         // send off the query
         $.ajax({
             url: url,
