@@ -332,7 +332,8 @@ function setChannelRow(label, value, selector, twoRows, eclass, eid) {
     var lab = $('<strong>').append(label);
 
     var val = (typeof twoRows != 'undefined') ? $('<div>') : $('<span>');
-    val.append(value);
+    var vtext = (value) ? value : "<i>none</i>";
+    val.append(vtext);
 
     var cla = (typeof eclass != 'undefined') ? eclass : "";
     val.addClass(cla);
@@ -340,7 +341,7 @@ function setChannelRow(label, value, selector, twoRows, eclass, eid) {
     var valId = (typeof eid != 'undefined') ? eid : "";
     val.attr( "id", valId );
 
-    var row = $('<p>').appendTo(selector);
+    var row = $('<div>').appendTo(selector);
     row.append(lab).append(val);
 }
 
@@ -434,7 +435,7 @@ function channelsCallback(data) {
             anchor.append(thumb);
 
             var tDiv = $('<div>', {class: 'media'});
-            var bDiv = $('<div>', {class: 'media-body'});
+            var bDiv = $('<div>', {class: 'media-body', id: 'media-body-' + channel.id});
             var chTitle = $('<h4>', {
                 class: 'media-heading'
             });
@@ -444,25 +445,19 @@ function channelsCallback(data) {
                 text: channel.title,
                 style: "cursor: pointer;"
             });
-            chTitle.append(tAnch).append(" / " + channel.id);
-            bDiv.append(chTitle);
-            tDiv.append(anchor).append(bDiv);
 
+            chTitle.append(tAnch).append(" / " + channel.id + " / " + channel.status);
+            bDiv.append(chTitle);
+
+            tDiv.append(anchor).append(bDiv);
             tDiv.appendTo('#chan-body');
 
-            // var ul2 = $('<ul>').appendTo('#chan-body');
-            var ul2 = $('<ul>');
-            bDiv.append(ul2);
-            $.each(channel, function(index, item) {
-                if (index === "embedTag") {
-                    // skip
-                } else {
-                    ul2.append(
-                        $('<li>').append(item)
-                    );
-                }
-
-            });
+            setChannelRow("Description: ", channel.description, '#media-body-' + channel.id);
+            setChannelRow("Created At: ", channel.createdAt, '#media-body-' + channel.id);
+            setChannelRow("Last Streamed At: ", channel.lastStreamedAt, '#media-body-' + channel.id);
+            setChannelRow("Total Views: ", channel.totalViews, '#media-body-' + channel.id);
+            setChannelRow("Rating: ", channel.rating, '#media-body-' + channel.id);
+            setChannelRow("Viewers Now: ", channel.viewersNow, '#media-body-' + channel.id);
         });
     }
 
