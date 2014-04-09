@@ -293,6 +293,7 @@ function channelInfoCallback(data) {
         disabled: true
     });
     setChannelRow("Embed Tag: ", text, '#info-body');
+    setChannelRow("", results.embedTag, '#info-body');
     anchor = $('<a>', {
         href: results.embedTagSourceUrl,
         text: results.embedTagSourceUrl,
