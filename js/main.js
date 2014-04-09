@@ -458,9 +458,14 @@ function channelsCallback(data) {
 
             var ul2 = $('<ul>').appendTo('#chan-body');
             $.each(channel, function(index, item) {
-                ul2.append(
-                    $('<li>').append(item)
-                );
+                if (index === "embedTag") {
+                    // skip
+                } else {
+                    ul2.append(
+                        $('<li>').append(item)
+                    );
+                }
+
             });
         });
     }
