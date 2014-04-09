@@ -68,7 +68,9 @@ function clearAll() {
     $('#info').empty();
     $('#info-panel').hide();
     $('#info-heading').empty();
-    $('#info-body').empty();
+    $('#chan-panel').hide();
+    $('#chan-heading').empty();
+    $('#chan-body').empty();
     $('#channels').empty();
     $('#videos').empty();
     $('#comments').empty();
@@ -410,24 +412,49 @@ function userInfoCallback(data) {
 }
 
 function channelsCallback(data) {
-    $('#channels').append(
-        $('<h3>').append('listAllChannels')
-    );
+    $('<h3>').append('listAllChannels').appendTo('#chan-heading');
     if (data === null) {
-        $('#channels').append("No channels found");
+        $('#chan-body').append("No channels found");
     } else {
         console.log(data[0]);
-        var ul = $('<ul>').appendTo('#channels');
 
         var results = data; // results array already. Why?
+        var anchor = '',
+            thumb = '',
+            chTitle = '',
+            usrBtn = '',
+            tDiv = '',
+            bDiv = '';
         $.each(results, function(index, channel) {
-            ul.append(
-                $('<li>').append(channel.title)
-            ).append($('<button>')
-                .attr( { type:"button", class:"btn btn-default btn-sm btn-channel", id:"ch-" + channel.id } )
-                .append('View channel info <span class="glyphicon glyphicon-chevron-right"></span>'))
-            ;
-            var ul2 = $('<ul>').appendTo(ul);
+            anchor = $('<a>', {
+                class: 'pull-left',
+                href: channel.imageUrl.small
+            });
+            thumb = $('<img>', {
+                class: 'pull-left',
+                src: channel.imageUrl.small,
+                alt: channel.title
+            });
+            anchor.append(thumb);
+
+            tDiv = $('<div>', {class: 'media'});
+            bDiv = $('<div>', {class: 'media-body'});
+            chTitle = $('<h4>', {
+                class: 'media-heading',
+                text: channel.title
+            });
+            usrBtn = $('<button>', {
+                type: "button",
+                class: "btn btn-default btn-sm btn-channel",
+                id: "ch-" + channel.id
+            })
+                .append('View channel info <span class="glyphicon glyphicon-chevron-right"></span>');
+            bDiv.append(chTitle).append(usrBtn);
+            tDiv.append(anchor).append(bDiv);
+
+            tDiv.appendTo('#chan-body');
+
+            var ul2 = $('<ul>').appendTo('#chan-body');
             $.each(channel, function(index, item) {
                 ul2.append(
                     $('<li>').append(item)
@@ -436,7 +463,7 @@ function channelsCallback(data) {
         });
     }
 
-    $('#channels').fadeIn();
+    $('#chan-panel').fadeIn();
 
     //hide everything
     $('.outline li > ul').hide();
