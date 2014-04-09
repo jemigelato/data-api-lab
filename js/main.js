@@ -68,6 +68,7 @@ function clearAll() {
     $('#info').empty();
     $('#info-panel').hide();
     $('#info-heading').empty();
+    $('#info-body').empty();
     $('#chan-panel').hide();
     $('#chan-heading').empty();
     $('#chan-body').empty();
