@@ -246,26 +246,26 @@ function channelInfoCallback(data) {
 
     $('<h3>', {text: "getInfo"}).appendTo('#info-heading');
 
-    setChannelRow("ID: ", results.id, '#info-body');
-    setChannelRow("User ID: ", results.user.id, '#info-body');
+    setRow("ID: ", results.id, '#info-body');
+    setRow("User ID: ", results.user.id, '#info-body');
     anchor = $('<a>', {
         href: results.user.userName,
         text: results.user.userName,
         target: ""
     });
-    setChannelRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+    setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
     anchor = $('<a>', {
         href: results.user.url,
         text: results.user.url,
         target: "_blank"
     });
-    setChannelRow("User URL: ", anchor, '#info-body');
-    setChannelRow("Description: ", results.description, '#info-body');
+    setRow("User URL: ", anchor, '#info-body');
+    setRow("Description: ", results.description, '#info-body');
     anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
-    setChannelRow("URL: ", anchor, '#info-body');
-    setChannelRow("Status: ", results.status, '#info-body');
-    setChannelRow("Created At: ", results.createdAt, '#info-body');
-    setChannelRow("Last Streamed At: ", results.lastStreamedAt, '#info-body');
+    setRow("URL: ", anchor, '#info-body');
+    setRow("Status: ", results.status, '#info-body');
+    setRow("Created At: ", results.createdAt, '#info-body');
+    setRow("Last Streamed At: ", results.lastStreamedAt, '#info-body');
     anchor = $('<a>', {
         href: results.imageUrl.small,
         target: "_blank"
@@ -275,7 +275,7 @@ function channelInfoCallback(data) {
         alt: "small thumbnail"
     });
     anchor.append(thumb);
-    setChannelRow("Image (Small): ", anchor, '#info-body', true);
+    setRow("Image (Small): ", anchor, '#info-body', true);
 
     anchor = $('<a>', {
         href: results.imageUrl.medium,
@@ -286,35 +286,35 @@ function channelInfoCallback(data) {
         alt: "small thumbnail"
     });
     anchor.append(thumb);
-    setChannelRow("Image (Medium): ", anchor, '#info-body', true);
-    setChannelRow("Rating: ", results.rating, '#info-body');
+    setRow("Image (Medium): ", anchor, '#info-body', true);
+    setRow("Rating: ", results.rating, '#info-body');
     text = $('<input>', {
         type: 'text',
         value: results.embedTag,
         disabled: true
     });
-    setChannelRow("Embed Tag: ", text, '#info-body');
-    setChannelRow("", results.embedTag, '#info-body');
+    setRow("Embed Tag: ", text, '#info-body');
+    setRow("", results.embedTag, '#info-body');
     anchor = $('<a>', {
         href: results.embedTagSourceUrl,
         text: results.embedTagSourceUrl,
         target: "_blank"
     });
-    setChannelRow("Embed Tag Source URL: ", anchor, '#info-body');
-    setChannelRow("Has Tags: ", results.hasTags, '#info-body');
-    setChannelRow("Number of Comments: ", results.numberOf.comments, '#info-body');
-    setChannelRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
-    setChannelRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
-    setChannelRow("Number of Views: ", results.numberOf.views, '#info-body');
-    setChannelRow("Number of Tags: ", results.numberOf.tags, '#info-body');
-    setChannelRow("Tags: ", results.tags, '#info-body');
-    setChannelRow("Social Stream Hashtag: ", results.socialStream.hashtag, '#info-body');
+    setRow("Embed Tag Source URL: ", anchor, '#info-body');
+    setRow("Has Tags: ", results.hasTags, '#info-body');
+    setRow("Number of Comments: ", results.numberOf.comments, '#info-body');
+    setRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
+    setRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
+    setRow("Number of Views: ", results.numberOf.views, '#info-body');
+    setRow("Number of Tags: ", results.numberOf.tags, '#info-body');
+    setRow("Tags: ", results.tags, '#info-body');
+    setRow("Social Stream Hashtag: ", results.socialStream.hashtag, '#info-body');
     text = $('<input>', {
         type: 'text',
         value: results.chat.embedTag,
         disabled: true
     });
-    setChannelRow("Chat Embed Tag: ", text, '#info-body');
+    setRow("Chat Embed Tag: ", text, '#info-body');
 
     $('#info-panel').fadeIn();
 
@@ -328,7 +328,7 @@ function channelInfoCallback(data) {
     });
 }
 
-function setChannelRow(label, value, selector, twoRows, eclass, eid) {
+function setRow(label, value, selector, twoRows, eclass, eid) {
     var lab = $('<strong>').append(label);
 
     var val = (typeof twoRows != 'undefined') ? $('<div>') : $('<span>');
@@ -389,16 +389,16 @@ function userInfoCallback(data) {
             $('<h3>').append('getInfo')
         );
 
-        setChannelRow("ID: ", results.id, '#info-body');
-        setChannelRow("Registered At: ", results.registeredAt, '#info-body');
-        setChannelRow("About: ", results.about, '#info-body');
-        setChannelRow("Website: ", results.website, '#info-body');
+        setRow("ID: ", results.id, '#info-body');
+        setRow("Registered At: ", results.registeredAt, '#info-body');
+        setRow("About: ", results.about, '#info-body');
+        setRow("Website: ", results.website, '#info-body');
         var anchor = $('<a>', {
             href: results.url,
             text: results.url,
             target: "_blank"
         });
-        setChannelRow("URL: ", anchor, '#info-body');
+        setRow("URL: ", anchor, '#info-body');
 
         $('#info-panel').fadeIn();
     }
@@ -443,12 +443,12 @@ function channelsCallback(data) {
             tDiv.append(anchor).append(bDiv);
             tDiv.appendTo('#chan-body');
 
-            setChannelRow("Description: ", channel.description, '#media-body-' + channel.id);
-            setChannelRow("Created At: ", channel.createdAt, '#media-body-' + channel.id);
-            setChannelRow("Last Streamed At: ", channel.lastStreamedAt, '#media-body-' + channel.id);
-            setChannelRow("Total Views: ", channel.totalViews, '#media-body-' + channel.id);
-            setChannelRow("Rating: ", channel.rating, '#media-body-' + channel.id);
-            setChannelRow("Viewers Now: ", channel.viewersNow, '#media-body-' + channel.id);
+            setRow("Description: ", channel.description, '#media-body-' + channel.id);
+            setRow("Created At: ", channel.createdAt, '#media-body-' + channel.id);
+            setRow("Last Streamed At: ", channel.lastStreamedAt, '#media-body-' + channel.id);
+            setRow("Total Views: ", channel.totalViews, '#media-body-' + channel.id);
+            setRow("Rating: ", channel.rating, '#media-body-' + channel.id);
+            setRow("Viewers Now: ", channel.viewersNow, '#media-body-' + channel.id);
         });
     }
 
