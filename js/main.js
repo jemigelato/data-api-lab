@@ -421,42 +421,38 @@ function channelsCallback(data) {
         console.log(data[0]);
 
         var results = data; // results array already. Why?
-        var anchor = '',
-            thumb = '',
-            chTitle = '',
-            usrBtn = '',
-            tDiv = '',
-            bDiv = '';
         $.each(results, function(index, channel) {
-            anchor = $('<a>', {
-                class: 'pull-left',
-                href: channel.imageUrl.small
+            var anchor = $('<a>', {
+                class: 'pull-left btn-channel',
+                id: "ch-" + channel.id,
+                href: ""
             });
-            thumb = $('<img>', {
-                class: 'pull-left',
+            var thumb = $('<img>', {
                 src: channel.imageUrl.small,
                 alt: channel.title
             });
             anchor.append(thumb);
 
-            tDiv = $('<div>', {class: 'media'});
-            bDiv = $('<div>', {class: 'media-body'});
-            chTitle = $('<h4>', {
-                class: 'media-heading',
-                text: channel.title
+            var tDiv = $('<div>', {class: 'media'});
+            var bDiv = $('<div>', {class: 'media-body'});
+            var chTitle = $('<h4>', {
+                class: 'media-heading'
             });
-            usrBtn = $('<button>', {
-                type: "button",
-                class: "btn btn-default btn-sm btn-channel",
-                id: "ch-" + channel.id
-            })
-                .append('View channel info <span class="glyphicon glyphicon-chevron-right"></span>');
-            bDiv.append(chTitle).append(usrBtn);
+            var tAnch = $('<a>', {
+                class: 'btn-channel',
+                id: "ch-" + channel.id,
+                text: channel.title,
+                style: "cursor: pointer;"
+            });
+            chTitle.append(tAnch).append(" / " + channel.id);
+            bDiv.append(chTitle);
             tDiv.append(anchor).append(bDiv);
 
             tDiv.appendTo('#chan-body');
 
-            var ul2 = $('<ul>').appendTo('#chan-body');
+            // var ul2 = $('<ul>').appendTo('#chan-body');
+            var ul2 = $('<ul>');
+            bDiv.append(ul2);
             $.each(channel, function(index, item) {
                 if (index === "embedTag") {
                     // skip
