@@ -389,25 +389,16 @@ function userInfoCallback(data) {
             $('<h3>').append('getInfo')
         );
 
-        $('#info-body').append($('<p>').append($('<strong>').append("ID: ")
-            ).append($('<span>').append(results.id))
-
-        ).append($('<p>').append($('<strong>').append("Registered At: ")
-            ).append($('<span>').append(results.registeredAt))
-
-        ).append($('<p>').append($('<strong>').append("About: ")
-            ).append($('<span>').append(results.about))
-
-        ).append($('<p>').append($('<strong>').append("Website: ")
-            ).append($('<span>').append(results.website))
-
-        ).append($('<p>').append($('<strong>').append("URL: ")
-            ).append($('<span>').append(
-                $('<a>').attr( {'href': results.url, 'target': '_blank' }
-                    ).append(results.url)
-                )
-            )
-        );
+        setChannelRow("ID: ", results.id, '#info-body');
+        setChannelRow("Registered At: ", results.registeredAt, '#info-body');
+        setChannelRow("About: ", results.about, '#info-body');
+        setChannelRow("Website: ", results.website, '#info-body');
+        var anchor = $('<a>', {
+            href: results.url,
+            text: results.url,
+            target: "_blank"
+        });
+        setChannelRow("URL: ", anchor, '#info-body');
 
         $('#info-panel').fadeIn();
     }
