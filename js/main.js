@@ -356,8 +356,6 @@ function setRow(label, value, selector, twoRows, eclass, eid) {
         val.append(vtext);
     }
 
-
-
     var cla = (typeof eclass != 'undefined') ? eclass : "";
     val.addClass(cla);
 
@@ -440,7 +438,9 @@ function channelsCallback(data) {
         var results = data; // results array already. Why?
         $.each(results, function(index, channel) {
 
-
+            if (index > 0) {
+                $('<hr>').appendTo('#chan-body');
+            }
 
             var anchor = $('<a>', {
                 class: 'pull-left btn-channel',
