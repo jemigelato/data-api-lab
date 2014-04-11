@@ -3,6 +3,7 @@ var baseUrl = "http://api.ustream.tv/json";
 
 var userSearchUrl = baseUrl + '/user/';
 var channelSearchUrl = baseUrl + '/channel/';
+var videoSearchUrl = baseUrl + '/video/';
 var searchString = "";
 var query = "";
 var url = "";
@@ -43,6 +44,17 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
+    $(document.body).on("click", '.btn-video', function(e) {
+        var target = $(e.currentTarget);
+        var video = target[0].id.match(/vid-([a-zA-Z0-9\-]*)/);
+
+        if (video && video[1]) {
+            openVideo(video[1]);
+        }
+
+        e.preventDefault();
+    });
+
 });
 
 function userSearch(event) {
@@ -74,6 +86,9 @@ function clearAll() {
     $('#chan-body').empty();
     $('#channels').empty();
     $('#videos').empty();
+    $('#video-panel').hide();
+    $('#video-heading').empty();
+    $('#video-body').empty();
     $('#comments').empty();
     channelSearched = false;
     userSearched = false;
@@ -213,6 +228,7 @@ function searchCallback(data) {
 function openUser(userName) { // TODO: back key handling
     query = "/getInfo?key=" + apikey;
     url = userSearchUrl + userName + query;
+    console.log(url);
     // send off the query
     $.ajax({
         url: url,
@@ -224,12 +240,116 @@ function openUser(userName) { // TODO: back key handling
 function openChannel(chId) { // TODO: back key handling
     query = "/getInfo?key=" + apikey;
     url = channelSearchUrl + chId + query;
+    console.log(url);
     // send off the query
     $.ajax({
         url: url,
         dataType: "jsonp",
         success: channelInfoCallback
     });
+}
+
+function openVideo(vidId) { // TODO: back key handling
+    query = "/getInfo?key=" + apikey;
+    url = videoSearchUrl + vidId + query;
+    console.log(url);
+    // send off the query
+    $.ajax({
+        url: url,
+        dataType: "jsonp",
+        success: videoInfoCallback
+    });
+}
+
+function videoInfoCallback(data) {
+    clearAll();
+    var results = data; // results array already. Why?
+
+    var anchor = '',
+        text = ''
+        image = ''
+        thumb = '';
+
+    $('<h1>', {text: results.title}).appendTo('#title');
+    $('#title').fadeIn();
+
+    $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
+
+    setRow("ID: ", results.id, '#info-body');
+    setRow("User ID: ", results.user.id, '#info-body');
+    anchor = $('<a>', {
+        href: results.user.userName,
+        text: results.user.userName,
+        target: ""
+    });
+    setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+    anchor = $('<a>', {
+        href: results.user.url,
+        text: results.user.url,
+        target: "_blank"
+    });
+    setRow("User URL: ", anchor, '#info-body');
+    setRow("Description: ", results.description, '#info-body', true);
+    setRow("Created At: ", results.createdAt, '#info-body');
+    anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
+    setRow("URL: ", anchor, '#info-body');
+    setRow("Length: ", results.lengthInSecond + " seconds", '#info-body');
+    setRow("File Size: ", results.fileSize + " seconds", '#info-body');
+
+    anchor = $('<a>', {
+        href: results.imageUrl.small,
+        target: "_blank"
+    });
+    thumb = $('<img>', {
+        src: results.imageUrl.small,
+        alt: "small thumbnail"
+    });
+    anchor.append(thumb);
+    setRow("Image (Small): ", anchor, '#info-body', true);
+
+    anchor = $('<a>', {
+        href: results.imageUrl.medium,
+        target: "_blank"
+    });
+    thumb = $('<img>', {
+        src: results.imageUrl.medium,
+        alt: "medium thumbnail"
+    });
+    anchor.append(thumb);
+    setRow("Image (Medium): ", anchor, '#info-body', true);
+
+    setRow("Rating: ", results.rating, '#info-body');
+    text = $('<input>', {
+        type: 'text',
+        value: results.embedTag,
+        disabled: true
+    });
+    setRow("Embed Tag: ", text, '#info-body');
+    setRow("", results.embedTag, '#info-body');
+    anchor = $('<a>', {
+        href: results.embedTagSourceUrl,
+        text: results.embedTagSourceUrl,
+        target: "_blank"
+    });
+    setRow("Embed Tag Source URL: ", anchor, '#info-body');
+    setRow("Has Tags: ", results.hasTags, '#info-body');
+    setRow("Number of Comments: ", results.numberOf.comments, '#info-body');
+    setRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
+    setRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
+    setRow("Number of Views: ", results.numberOf.views, '#info-body');
+    setRow("Number of Tags: ", results.numberOf.tags, '#info-body');
+    setRow("Tags: ", results.tags, '#info-body');
+
+    anchor = $('<a>', {
+        href: results.liveHttpUrl,
+        text: results.liveHttpUrl,
+        target: "_blank"
+    });
+    setRow("Download link: ", anchor, '#info-body');
+
+    setRow("Source Channel ID: ", results.sourceChannel.id, '#info-body');
+
+    $('#info-panel').fadeIn();
 }
 
 function channelInfoCallback(data) {
@@ -244,7 +364,7 @@ function channelInfoCallback(data) {
     $('<h1>', {text: results.title}).appendTo('#title');
     $('#title').fadeIn();
 
-    $('<h3>', {text: "getInfo"}).appendTo('#info-heading');
+    $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
 
     setRow("ID: ", results.id, '#info-body');
     setRow("User ID: ", results.user.id, '#info-body');
@@ -345,8 +465,7 @@ function setRow(label, value, selector, twoRows, eclass, eid) {
 
     var vtext = (value) ? value : "<i>none</i>";
 
-    // var val = (typeof twoRows != 'undefined') ? $('<div>') : $('<span>');
-    if (twoRows) {
+    if (twoRows && value) {
         val = $('<div>', {style : "width:640px", class: "panel panel-default"});
         var pbody = $('<div>', {class: "panel-body"});
         val.append(pbody);
@@ -407,7 +526,7 @@ function userInfoCallback(data) {
         );
         $('#title').fadeIn();
         $('#info-heading').append(
-            $('<h3>').append('getInfo')
+            $('<h2>').append('getInfo')
         );
 
         setRow("ID: ", results.id, '#info-body');
@@ -426,8 +545,54 @@ function userInfoCallback(data) {
 
 }
 
+function setHeading(index, eid, actualId, title, imageUrl, anchorClass, selector, status) {
+    $('<hr>').appendTo(selector);
+
+    var anchor = $('<a>', {
+        class: 'pull-left btn-channel',
+        id: eid,
+        href: ""
+    });
+    var thumb = $('<img>', {
+        src: imageUrl,
+        alt: title
+    });
+    anchor.append(thumb);
+
+    var tDiv = $('<div>', {
+        class: 'media'
+    });
+
+    var bDiv = $('<div>', {
+        class: 'media-body',
+        id: 'media-body-' + actualId
+    });
+
+    var chTitle = $('<h4>', {
+        class: 'media-heading'
+    });
+
+    var tAnch = $('<a>', {
+        class: anchorClass,
+        id: eid,
+        text: title,
+        style: "cursor: pointer;"
+    });
+
+    if (status) {
+        chTitle.append(tAnch).append(" / " + actualId + " / " + status);
+    } else {
+        chTitle.append(tAnch).append(" / " + actualId);
+    }
+
+    bDiv.append(chTitle);
+
+    tDiv.append(anchor).append(bDiv);
+    tDiv.appendTo(selector);
+}
+
 function channelsCallback(data) {
-    $('<h3>').append('listAllChannels').appendTo('#chan-heading');
+    $('<h2>').append('listAllChannels').appendTo('#chan-heading');
     if (data === null) {
         $('#chan-body').append("No channels found");
     } else {
@@ -438,38 +603,8 @@ function channelsCallback(data) {
         var results = data; // results array already. Why?
         $.each(results, function(index, channel) {
 
-            if (index > 0) {
-                $('<hr>').appendTo('#chan-body');
-            }
-
-            var anchor = $('<a>', {
-                class: 'pull-left btn-channel',
-                id: "ch-" + channel.id,
-                href: ""
-            });
-            var thumb = $('<img>', {
-                src: channel.imageUrl.small,
-                alt: channel.title
-            });
-            anchor.append(thumb);
-
-            var tDiv = $('<div>', {class: 'media'});
-            var bDiv = $('<div>', {class: 'media-body', id: 'media-body-' + channel.id});
-            var chTitle = $('<h4>', {
-                class: 'media-heading'
-            });
-            var tAnch = $('<a>', {
-                class: 'btn-channel',
-                id: "ch-" + channel.id,
-                text: channel.title,
-                style: "cursor: pointer;"
-            });
-
-            chTitle.append(tAnch).append(" / " + channel.id + " / " + channel.status);
-            bDiv.append(chTitle);
-
-            tDiv.append(anchor).append(bDiv);
-            tDiv.appendTo('#chan-body');
+            setHeading(index, "ch-" + channel.id, channel.id, channel.title,
+                channel.imageUrl.small, 'btn-channel', '#chan-body', channel.status);
 
             setRow("Description: ", channel.description, '#media-body-' + channel.id, true);
             setRow("Created At: ", channel.createdAt, '#media-body-' + channel.id);
@@ -495,34 +630,34 @@ function channelsCallback(data) {
 }
 
 function videosCallback(data) {
-    $('#videos').append(
-        $('<h3>').append('listAllVideos')
-    );
+    $('<h2>').append('listAllVideos').appendTo('#video-heading');
+
     if (data === null) {
-        $('#videos').append("No videos found");
+        $('#video-body').append("No videos found");
     } else {
         console.log(data);
-        var ul = $('<ul>').appendTo('#videos');
+        // var ul = $('<ul>').appendTo('#videos');
         var results = data;
         $.each(results, function(index, video) {
-            ul.append(
-                $('<li>').append(video.title)
-            );
-            var ul2 = $('<ul>').appendTo(ul);
-            $.each(video, function(index, item) {
-                ul2.append(
-                    $('<li>').append(item)
-                );
-            });
+            setHeading(index, "vid-" + video.id, video.id, video.title,
+                video.imageUrl.small, 'btn-video', '#video-body', video.status);
+
+            setRow("Description: ", video.description, '#media-body-' + video.id, true);
+            setRow("Created At: ", video.createdAt, '#media-body-' + video.id);
+            setRow("Length: ", video.lengthInSecond + " seconds", '#media-body-' + video.id);
+            setRow("Total Views: ", video.totalViews, '#media-body-' + video.id);
+            setRow("Rating: ", video.rating, '#media-body-' + video.id);
+            setRow("Source Channel ID: ", video.sourceChannel.id, '#media-body-' + video.id);
         });
     }
 
-    $('#videos').fadeIn();
+    //$('#videos').fadeIn();
+    $('#video-panel').fadeIn();
 }
 
 function commentsCallback(data) {
     $('#comments').append(
-        $('<h3>').append('getComments')
+        $('<h2>').append('getComments')
     );
     if (data === null || $.isEmptyObject(data)) {
         $('#comments').append("No comments found");
