@@ -105,6 +105,10 @@ p { margin: 0 }
 max-width: 400px;
 }
 
+.info-body {
+max-width: 640px;
+}
+
 #search-form {
 }
 #search {

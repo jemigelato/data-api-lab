@@ -260,7 +260,7 @@ function channelInfoCallback(data) {
         target: "_blank"
     });
     setRow("User URL: ", anchor, '#info-body');
-    setRow("Description: ", results.description, '#info-body');
+    setRow("Description: ", results.description, '#info-body', true);
     anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
     setRow("URL: ", anchor, '#info-body');
     setRow("Status: ", results.status, '#info-body');
@@ -343,9 +343,20 @@ function channelInfoCallback(data) {
 function setRow(label, value, selector, twoRows, eclass, eid) {
     var lab = $('<strong>').append(label);
 
-    var val = (typeof twoRows != 'undefined') ? $('<div>') : $('<span>');
     var vtext = (value) ? value : "<i>none</i>";
-    val.append(vtext);
+
+    // var val = (typeof twoRows != 'undefined') ? $('<div>') : $('<span>');
+    if (twoRows) {
+        val = $('<div>', {style : "width:640px", class: "panel panel-default"});
+        var pbody = $('<div>', {class: "panel-body"});
+        val.append(pbody);
+        pbody.append(vtext);
+    } else {
+        val = $('<span>');
+        val.append(vtext);
+    }
+
+
 
     var cla = (typeof eclass != 'undefined') ? eclass : "";
     val.addClass(cla);
@@ -460,7 +471,7 @@ function channelsCallback(data) {
             tDiv.append(anchor).append(bDiv);
             tDiv.appendTo('#chan-body');
 
-            setRow("Description: ", channel.description, '#media-body-' + channel.id);
+            setRow("Description: ", channel.description, '#media-body-' + channel.id, true);
             setRow("Created At: ", channel.createdAt, '#media-body-' + channel.id);
             setRow("Last Streamed At: ", channel.lastStreamedAt, '#media-body-' + channel.id);
             setRow("Total Views: ", channel.totalViews, '#media-body-' + channel.id);
