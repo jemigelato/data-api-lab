@@ -294,7 +294,8 @@ function videoInfoCallback(data) {
     anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
     setRow("URL: ", anchor, '#info-body');
     setRow("Length: ", results.lengthInSecond + " seconds", '#info-body');
-    setRow("File Size: ", results.fileSize + " seconds", '#info-body');
+    var sizeInMB = (results.fileSize / (1024*1024)).toFixed(2);
+    setRow("File Size: ", sizeInMB + " MB", '#info-body');
 
     anchor = $('<a>', {
         href: results.imageUrl.small,
