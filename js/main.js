@@ -266,27 +266,39 @@ function channelInfoCallback(data) {
     setRow("Status: ", results.status, '#info-body');
     setRow("Created At: ", results.createdAt, '#info-body');
     setRow("Last Streamed At: ", results.lastStreamedAt, '#info-body');
-    anchor = $('<a>', {
-        href: results.imageUrl.small,
-        target: "_blank"
-    });
-    thumb = $('<img>', {
-        src: results.imageUrl.small,
-        alt: "small thumbnail"
-    });
-    anchor.append(thumb);
-    setRow("Image (Small): ", anchor, '#info-body', true);
+    var imgUrl;
+    if (results.imageUrl) {
+        imgUrl = results.imageUrl.small;
+        anchor = $('<a>', {
+            href: imgUrl,
+            target: "_blank"
+        });
+        thumb = $('<img>', {
+            src: imgUrl,
+            alt: "small thumbnail"
+        });
+        anchor.append(thumb);
+        setRow("Image (Small): ", anchor, '#info-body', true);
+    } else {
+        setRow("Image (Small): ", undefined, '#info-body');
+    }
 
-    anchor = $('<a>', {
-        href: results.imageUrl.medium,
-        target: "_blank"
-    });
-    thumb = $('<img>', {
-        src: results.imageUrl.medium,
-        alt: "small thumbnail"
-    });
-    anchor.append(thumb);
-    setRow("Image (Medium): ", anchor, '#info-body', true);
+    if (results.imageUrl) {
+        imgUrl = results.imageUrl.medium;
+        anchor = $('<a>', {
+            href: imgUrl,
+            target: "_blank"
+        });
+        thumb = $('<img>', {
+            src: imgUrl,
+            alt: "small thumbnail"
+        });
+        anchor.append(thumb);
+        setRow("Image (Medium): ", anchor, '#info-body', true);
+    } else {
+        setRow("Image (Medium): ", undefined, '#info-body');
+    }
+
     setRow("Rating: ", results.rating, '#info-body');
     text = $('<input>', {
         type: 'text',
@@ -412,8 +424,13 @@ function channelsCallback(data) {
     } else {
         console.log(data[0]);
 
+        var table = $('<table>', {class: "table"});
+
         var results = data; // results array already. Why?
         $.each(results, function(index, channel) {
+
+
+
             var anchor = $('<a>', {
                 class: 'pull-left btn-channel',
                 id: "ch-" + channel.id,
