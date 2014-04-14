@@ -11,6 +11,7 @@ var channelSearched = false;
 var userSearched = false;
 var userData = null;
 var channelData = null;
+var searchType = "userchannelname";
 
 $(document).ready(function() {
     $("form").submit(function(event) {
@@ -18,8 +19,25 @@ $(document).ready(function() {
         clearAll();
         searchString = $("input:first").val();
         console.log(searchString);
-        userSearch();
-        channelSearch();
+        if ( searchType === "userchannelname" ) {
+
+        }
+        switch (searchType) {
+            case "userchannelname":
+                userSearch();
+                channelSearch();
+                break;
+            case "userid":
+                openUser(searchString);
+                break;
+            case "channelid":
+                openChannel(searchString);
+                break;
+            case "videoid":
+                openVideo(searchString);
+                break;
+        };
+
     });
 
     $(document.body).on("click", '.btn-channel', function(e) {
@@ -57,22 +75,46 @@ $(document).ready(function() {
 
     $(document.body).on('click', '.dropdown-menu li', function(event) {
         var target = $(event.currentTarget);
+        var drop = target[0].id.match(/drop-([a-zA-Z0-9\-]*)/);
 
-        if ( target.text().search(/channel id/i) != -1 ) {
-            $('#search').attr('placeholder', 'channel ID').focus();
-        } else if ( target.text().search(/user id/i) != -1 ) {
-            $('#search').attr('placeholder', 'user ID').focus();
-        } else if ( target.text().search(/video id/i) != -1 ) {
-            $('#search').attr('placeholder', 'video ID').focus();
-        } else {
-            $('#search').attr('placeholder', 'user or channel name').focus();
+        if (drop && drop[1]) {
+            switch (drop[1]) {
+                case "name":
+                    searchType = "userchannelname";
+                    $('#search').attr('placeholder', 'user or channel name').focus();
+                    break;
+                case "channel-id":
+                    searchType = "channelid";
+                    $('#search').attr('placeholder', 'channel ID')
+                        .addClass('key-numeric')
+                        .focus();
+                    break;
+                case "user-id":
+                    searchType = "userid";
+                    $('#search').attr('placeholder', 'user ID')
+                        .addClass('key-numeric')
+                        .focus();
+                    break;
+                case "video-id":
+                    searchType = "videoid";
+                    $('#search').attr('placeholder', 'video ID')
+                        .addClass('key-numeric')
+                        .focus();
+                    break;
+            }
         }
-
 
         $('#toggle-btn-label').text(target.text());
         $('.dropdown-toggle').dropdown('toggle');
 
         event.preventDefault();
+    });
+
+    $(document.body).on('keypress', '.key-numeric', function(e) {
+        var verified = (e.which == 13 || e.which == 8 || e.which == undefined || e.which == 0) ? null : String.fromCharCode(e.which).match(/[^0-9]/);
+        if (verified) {
+            e.preventDefault();
+        }
     });
 
 });
@@ -131,6 +173,15 @@ function channelSearch() {
     });
 }
 
+function showNoResults(str) {
+    if (str) {
+        $('#title').append("Sorry, no results found for: " + str);
+    } else {
+        $('#title').append("Sorry, no results found.");
+    }
+    $('#title').fadeIn();
+}
+
 function searchCallback(data) {
 
     if (this.searchType === 'user') {
@@ -145,7 +196,7 @@ function searchCallback(data) {
 
         if (userData === null && channelData === null) {
 
-            $('#title').append("Sorry, no results found for: " + searchString);
+            showNoResults(searchString);
 
         } else if ((userData != null && userData.length === 1 && channelData === null)
             || (userData === null && channelData.length === 1)) {
@@ -285,200 +336,208 @@ function videoInfoCallback(data) {
     clearAll();
     var results = data; // results array already. Why?
 
-    var anchor = '',
-        text = ''
-        image = ''
-        thumb = '';
+    if ( !results ) {
+        showNoResults();
+    } else {
+        var anchor = '',
+            text = ''
+            image = ''
+            thumb = '';
 
-    $('<h1>', {text: results.title}).appendTo('#title');
-    $('#title').fadeIn();
+        $('<h1>', {text: results.title}).appendTo('#title');
+        $('#title').fadeIn();
 
-    $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
+        $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
 
-    setRow("ID: ", results.id, '#info-body');
-    setRow("User ID: ", results.user.id, '#info-body');
-    anchor = $('<a>', {
-        href: results.user.userName,
-        text: results.user.userName,
-        target: ""
-    });
-    setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
-    anchor = $('<a>', {
-        href: results.user.url,
-        text: results.user.url,
-        target: "_blank"
-    });
-    setRow("User URL: ", anchor, '#info-body');
-    setRow("Description: ", results.description, '#info-body', true);
-    setRow("Created At: ", results.createdAt, '#info-body');
-    anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
-    setRow("URL: ", anchor, '#info-body');
-    setRow("Length: ", results.lengthInSecond + " seconds", '#info-body');
-    var sizeInMB = (results.fileSize / (1024*1024)).toFixed(2);
-    setRow("File Size: ", sizeInMB + " MB", '#info-body');
+        setRow("ID: ", results.id, '#info-body');
+        setRow("User ID: ", results.user.id, '#info-body');
+        anchor = $('<a>', {
+            href: results.user.userName,
+            text: results.user.userName,
+            target: ""
+        });
+        setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+        anchor = $('<a>', {
+            href: results.user.url,
+            text: results.user.url,
+            target: "_blank"
+        });
+        setRow("User URL: ", anchor, '#info-body');
+        setRow("Description: ", results.description, '#info-body', true);
+        setRow("Created At: ", results.createdAt, '#info-body');
+        anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
+        setRow("URL: ", anchor, '#info-body');
+        setRow("Length: ", results.lengthInSecond + " seconds", '#info-body');
+        var sizeInMB = (results.fileSize / (1024*1024)).toFixed(2);
+        setRow("File Size: ", sizeInMB + " MB", '#info-body');
 
-    anchor = $('<a>', {
-        href: results.imageUrl.small,
-        target: "_blank"
-    });
-    thumb = $('<img>', {
-        src: results.imageUrl.small,
-        alt: "small thumbnail"
-    });
-    anchor.append(thumb);
-    setRow("Image (Small): ", anchor, '#info-body', true);
+        anchor = $('<a>', {
+            href: results.imageUrl.small,
+            target: "_blank"
+        });
+        thumb = $('<img>', {
+            src: results.imageUrl.small,
+            alt: "small thumbnail"
+        });
+        anchor.append(thumb);
+        setRow("Image (Small): ", anchor, '#info-body', true);
 
-    anchor = $('<a>', {
-        href: results.imageUrl.medium,
-        target: "_blank"
-    });
-    thumb = $('<img>', {
-        src: results.imageUrl.medium,
-        alt: "medium thumbnail"
-    });
-    anchor.append(thumb);
-    setRow("Image (Medium): ", anchor, '#info-body', true);
+        anchor = $('<a>', {
+            href: results.imageUrl.medium,
+            target: "_blank"
+        });
+        thumb = $('<img>', {
+            src: results.imageUrl.medium,
+            alt: "medium thumbnail"
+        });
+        anchor.append(thumb);
+        setRow("Image (Medium): ", anchor, '#info-body', true);
 
-    setRow("Rating: ", results.rating, '#info-body');
-    text = $('<input>', {
-        type: 'text',
-        value: results.embedTag,
-        disabled: true
-    });
-    setRow("Embed Tag: ", text, '#info-body');
-    setRow("", results.embedTag, '#info-body');
-    anchor = $('<a>', {
-        href: results.embedTagSourceUrl,
-        text: results.embedTagSourceUrl,
-        target: "_blank"
-    });
-    setRow("Embed Tag Source URL: ", anchor, '#info-body');
-    setRow("Has Tags: ", results.hasTags, '#info-body');
-    setRow("Number of Comments: ", results.numberOf.comments, '#info-body');
-    setRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
-    setRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
-    setRow("Number of Views: ", results.numberOf.views, '#info-body');
-    setRow("Number of Tags: ", results.numberOf.tags, '#info-body');
-    setRow("Tags: ", results.tags, '#info-body');
+        setRow("Rating: ", results.rating, '#info-body');
+        text = $('<input>', {
+            type: 'text',
+            value: results.embedTag,
+            disabled: true
+        });
+        setRow("Embed Tag: ", text, '#info-body');
+        setRow("", results.embedTag, '#info-body');
+        anchor = $('<a>', {
+            href: results.embedTagSourceUrl,
+            text: results.embedTagSourceUrl,
+            target: "_blank"
+        });
+        setRow("Embed Tag Source URL: ", anchor, '#info-body');
+        setRow("Has Tags: ", results.hasTags, '#info-body');
+        setRow("Number of Comments: ", results.numberOf.comments, '#info-body');
+        setRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
+        setRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
+        setRow("Number of Views: ", results.numberOf.views, '#info-body');
+        setRow("Number of Tags: ", results.numberOf.tags, '#info-body');
+        setRow("Tags: ", results.tags, '#info-body');
 
-    anchor = $('<a>', {
-        href: results.liveHttpUrl,
-        text: results.liveHttpUrl,
-        target: "_blank"
-    });
-    setRow("Download link: ", anchor, '#info-body');
+        anchor = $('<a>', {
+            href: results.liveHttpUrl,
+            text: results.liveHttpUrl,
+            target: "_blank"
+        });
+        setRow("Download link: ", anchor, '#info-body');
 
-    setRow("Source Channel ID: ", results.sourceChannel.id, '#info-body');
+        setRow("Source Channel ID: ", results.sourceChannel.id, '#info-body');
 
-    $('#info-panel').fadeIn();
+        $('#info-panel').fadeIn();
+    }
 }
 
 function channelInfoCallback(data) {
     clearAll();
     var results = data; // results array already. Why?
 
-    var anchor = '',
-        text = ''
-        image = ''
-        thumb = '';
+    if ( !results || !results.user.id ) {
+        showNoResults();
+    } else {
+        var anchor = '',
+            text = ''
+            image = ''
+            thumb = '';
 
-    $('<h1>', {text: results.title}).appendTo('#title');
-    $('#title').fadeIn();
+        $('<h1>', {text: results.title}).appendTo('#title');
+        $('#title').fadeIn();
 
-    $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
+        $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
 
-    setRow("ID: ", results.id, '#info-body');
-    setRow("User ID: ", results.user.id, '#info-body');
-    anchor = $('<a>', {
-        href: results.user.userName,
-        text: results.user.userName,
-        target: ""
-    });
-    setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
-    anchor = $('<a>', {
-        href: results.user.url,
-        text: results.user.url,
-        target: "_blank"
-    });
-    setRow("User URL: ", anchor, '#info-body');
-    setRow("Description: ", results.description, '#info-body', true);
-    anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
-    setRow("URL: ", anchor, '#info-body');
-    setRow("Status: ", results.status, '#info-body');
-    setRow("Created At: ", results.createdAt, '#info-body');
-    setRow("Last Streamed At: ", results.lastStreamedAt, '#info-body');
-    var imgUrl;
-    if (results.imageUrl) {
-        imgUrl = results.imageUrl.small;
+        setRow("ID: ", results.id, '#info-body');
+        setRow("User ID: ", results.user.id, '#info-body');
         anchor = $('<a>', {
-            href: imgUrl,
+            href: results.user.userName,
+            text: results.user.userName,
+            target: ""
+        });
+        setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+        anchor = $('<a>', {
+            href: results.user.url,
+            text: results.user.url,
             target: "_blank"
         });
-        thumb = $('<img>', {
-            src: imgUrl,
-            alt: "small thumbnail"
-        });
-        anchor.append(thumb);
-        setRow("Image (Small): ", anchor, '#info-body', true);
-    } else {
-        setRow("Image (Small): ", undefined, '#info-body');
-    }
+        setRow("User URL: ", anchor, '#info-body');
+        setRow("Description: ", results.description, '#info-body', true);
+        anchor = $('<a>', {href: results.url, text: results.url, target: "_blank"});
+        setRow("URL: ", anchor, '#info-body');
+        setRow("Status: ", results.status, '#info-body');
+        setRow("Created At: ", results.createdAt, '#info-body');
+        setRow("Last Streamed At: ", results.lastStreamedAt, '#info-body');
+        var imgUrl;
+        if (results.imageUrl) {
+            imgUrl = results.imageUrl.small;
+            anchor = $('<a>', {
+                href: imgUrl,
+                target: "_blank"
+            });
+            thumb = $('<img>', {
+                src: imgUrl,
+                alt: "small thumbnail"
+            });
+            anchor.append(thumb);
+            setRow("Image (Small): ", anchor, '#info-body', true);
+        } else {
+            setRow("Image (Small): ", undefined, '#info-body');
+        }
 
-    if (results.imageUrl) {
-        imgUrl = results.imageUrl.medium;
+        if (results.imageUrl) {
+            imgUrl = results.imageUrl.medium;
+            anchor = $('<a>', {
+                href: imgUrl,
+                target: "_blank"
+            });
+            thumb = $('<img>', {
+                src: imgUrl,
+                alt: "small thumbnail"
+            });
+            anchor.append(thumb);
+            setRow("Image (Medium): ", anchor, '#info-body', true);
+        } else {
+            setRow("Image (Medium): ", undefined, '#info-body');
+        }
+
+        setRow("Rating: ", results.rating, '#info-body');
+        text = $('<input>', {
+            type: 'text',
+            value: results.embedTag,
+            disabled: true
+        });
+        setRow("Embed Tag: ", text, '#info-body');
+        setRow("", results.embedTag, '#info-body');
         anchor = $('<a>', {
-            href: imgUrl,
+            href: results.embedTagSourceUrl,
+            text: results.embedTagSourceUrl,
             target: "_blank"
         });
-        thumb = $('<img>', {
-            src: imgUrl,
-            alt: "small thumbnail"
+        setRow("Embed Tag Source URL: ", anchor, '#info-body');
+        setRow("Has Tags: ", results.hasTags, '#info-body');
+        setRow("Number of Comments: ", results.numberOf.comments, '#info-body');
+        setRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
+        setRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
+        setRow("Number of Views: ", results.numberOf.views, '#info-body');
+        setRow("Number of Tags: ", results.numberOf.tags, '#info-body');
+        setRow("Tags: ", results.tags, '#info-body');
+        setRow("Social Stream Hashtag: ", results.socialStream.hashtag, '#info-body');
+        text = $('<input>', {
+            type: 'text',
+            value: results.chat.embedTag,
+            disabled: true
         });
-        anchor.append(thumb);
-        setRow("Image (Medium): ", anchor, '#info-body', true);
-    } else {
-        setRow("Image (Medium): ", undefined, '#info-body');
+        setRow("Chat Embed Tag: ", text, '#info-body');
+
+        $('#info-panel').fadeIn();
+
+        query = "/getComments?key=" + apikey;
+        url = channelSearchUrl + searchString + query;
+        // send off the query
+        $.ajax({
+            url: url,
+            dataType: "jsonp",
+            success: channelCommentsCallback // TODO
+        });
     }
-
-    setRow("Rating: ", results.rating, '#info-body');
-    text = $('<input>', {
-        type: 'text',
-        value: results.embedTag,
-        disabled: true
-    });
-    setRow("Embed Tag: ", text, '#info-body');
-    setRow("", results.embedTag, '#info-body');
-    anchor = $('<a>', {
-        href: results.embedTagSourceUrl,
-        text: results.embedTagSourceUrl,
-        target: "_blank"
-    });
-    setRow("Embed Tag Source URL: ", anchor, '#info-body');
-    setRow("Has Tags: ", results.hasTags, '#info-body');
-    setRow("Number of Comments: ", results.numberOf.comments, '#info-body');
-    setRow("Number of Ratings: ", results.numberOf.ratings, '#info-body');
-    setRow("Number of Favorites: ", results.numberOf.favorites, '#info-body');
-    setRow("Number of Views: ", results.numberOf.views, '#info-body');
-    setRow("Number of Tags: ", results.numberOf.tags, '#info-body');
-    setRow("Tags: ", results.tags, '#info-body');
-    setRow("Social Stream Hashtag: ", results.socialStream.hashtag, '#info-body');
-    text = $('<input>', {
-        type: 'text',
-        value: results.chat.embedTag,
-        disabled: true
-    });
-    setRow("Chat Embed Tag: ", text, '#info-body');
-
-    $('#info-panel').fadeIn();
-
-    query = "/getComments?key=" + apikey;
-    url = channelSearchUrl + searchString + query;
-    // send off the query
-    $.ajax({
-        url: url,
-        dataType: "jsonp",
-        success: channelCommentsCallback // TODO
-    });
 }
 
 function setRow(label, value, selector, twoRows, eclass, eid) {
@@ -510,7 +569,7 @@ function userInfoCallback(data) {
     clearAll();
     var results = data; // results array already. Why?
     if (results === null) {
-        $('#title').append("No user found.");
+        showNoResults();
     } else {
         console.log(data[0]);
 
