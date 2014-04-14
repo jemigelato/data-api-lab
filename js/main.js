@@ -55,6 +55,26 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
+    $(document.body).on('click', '.dropdown-menu li', function(event) {
+        var target = $(event.currentTarget);
+
+        if ( target.text().search(/channel id/i) != -1 ) {
+            $('#search').attr('placeholder', 'channel ID').focus();
+        } else if ( target.text().search(/user id/i) != -1 ) {
+            $('#search').attr('placeholder', 'user ID').focus();
+        } else if ( target.text().search(/video id/i) != -1 ) {
+            $('#search').attr('placeholder', 'video ID').focus();
+        } else {
+            $('#search').attr('placeholder', 'user or channel name').focus();
+        }
+
+
+        $('#toggle-btn-label').text(target.text());
+        $('.dropdown-toggle').dropdown('toggle');
+
+        event.preventDefault();
+    });
+
 });
 
 function userSearch(event) {
