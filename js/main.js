@@ -344,7 +344,11 @@ function videoInfoCallback(data) {
             image = ''
             thumb = '';
 
-        $('<h1>', {text: results.title}).appendTo('#title');
+        $('<h1>', {text: results.title})
+            .append($('<small>', {
+                    text: "video"
+                }))
+            .appendTo('#title');
         $('#title').fadeIn();
 
         $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
@@ -440,7 +444,11 @@ function channelInfoCallback(data) {
             image = ''
             thumb = '';
 
-        $('<h1>', {text: results.title}).appendTo('#title');
+        $('<h1>', {text: results.title})
+            .append($('<small>', {
+                    text: "channel"
+                }))
+            .appendTo('#title');
         $('#title').fadeIn();
 
         $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
@@ -603,7 +611,11 @@ function userInfoCallback(data) {
 
         $('#title').append(
             $('<h1>').append(data.userName)
-        );
+            .append($('<small>', {
+                text: "user"
+            }))
+        )
+        ;
         $('#title').fadeIn();
         $('#info-heading').append(
             $('<h2>').append('getInfo')

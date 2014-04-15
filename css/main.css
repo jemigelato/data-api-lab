@@ -109,6 +109,10 @@ max-width: 400px;
 max-width: 640px;
 }
 
+h1 small {
+padding-left: 10px;
+}
+
 #search-form {
 }
 #search {
