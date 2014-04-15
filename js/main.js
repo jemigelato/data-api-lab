@@ -81,7 +81,9 @@ $(document).ready(function() {
             switch (drop[1]) {
                 case "name":
                     searchType = "userchannelname";
-                    $('#search').attr('placeholder', 'user or channel name').focus();
+                    $('#search').attr('placeholder', 'user or channel name')
+                        .removeClass('key-numeric')
+                        .focus();
                     break;
                 case "channel-id":
                     searchType = "channelid";
