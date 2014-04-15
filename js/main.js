@@ -154,6 +154,9 @@ function clearAll() {
     $('#video-heading').empty();
     $('#video-body').empty();
     $('#comments').empty();
+    $('#comment-panel').hide();
+    $('#comment-heading').empty();
+    $('#comment-body').empty();
     channelSearched = false;
     userSearched = false;
     userData = null;
@@ -750,29 +753,49 @@ function videosCallback(data) {
 }
 
 function commentsCallback(data) {
-    $('#comments').append(
-        $('<h2>').append('getComments')
-    );
-    if (data === null || $.isEmptyObject(data)) {
-        $('#comments').append("No comments found");
+
+    $('<h2>').append('getComments').appendTo('#comment-heading');
+
+    if (!data) {
+        $('#comment-body').append("No comments found");
     } else {
-        console.log(data[0]);
-        var ul = $('<ul>').appendTo('#comments');
+        console.log(data);
         var results = data;
         $.each(results, function(index, comment) {
-            ul.append(
-                $('<li>').append(comment.createdAt)
-            );
-            var ul2 = $('<ul>').appendTo(ul);
-            $.each(comment, function(index, item) {
-                ul2.append(
-                    $('<li>').append(item)
-                );
-            });
+            $('<hr>').appendTo('#comment-body');
+            setRow("Created At: ", comment.createdAt, '#comment-body');
+            setRow("Text: ", comment.text, '#comment-body', true);
+            setRow("ID: ", comment.id, '#comment-body');
+            setRow("Sender ID: ", comment.sender.id, '#comment-body');
+            setRow("Sender Username: ", comment.sender.userName, '#comment-body');
         });
     }
 
-    $('#comments').fadeIn();
+    $('#comment-panel').fadeIn();
+
+    // $('#comments').append(
+    //     $('<h2>').append('getComments')
+    // );
+    // if (data === null || $.isEmptyObject(data)) {
+    //     $('#comments').append("No comments found");
+    // } else {
+    //     console.log(data[0]);
+    //     var ul = $('<ul>').appendTo('#comments');
+    //     var results = data;
+    //     $.each(results, function(index, comment) {
+    //         ul.append(
+    //             $('<li>').append(comment.createdAt)
+    //         );
+    //         var ul2 = $('<ul>').appendTo(ul);
+    //         $.each(comment, function(index, item) {
+    //             ul2.append(
+    //                 $('<li>').append(item)
+    //             );
+    //         });
+    //     });
+    // }
+
+    // $('#comments').fadeIn();
 }
 
 function channelCommentsCallback(data) {
