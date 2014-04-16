@@ -14,16 +14,13 @@ var channelData = null;
 var searchType = "userchannelname";
 
 $(document).ready(function() {
-    $("form").submit(function(event) {
-        event.preventDefault(); //prevent form from submitting
-        clearAll();
-        searchString = $("input:first").val();
-        console.log(searchString);
-        if ( searchType === "userchannelname" ) {
 
-        }
-        switch (searchType) {
+    var updateContent = function(searchTarget) {
+
+        clearAll();
+        switch (searchTarget) {
             case "userchannelname":
+                History.pushState({ target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
                 userSearch();
                 channelSearch();
                 break;
@@ -37,10 +34,44 @@ $(document).ready(function() {
                 openVideo(searchString);
                 break;
         };
+    };
 
+    $("form").submit(function(event) {
+        event.preventDefault(); //prevent form from submitting
+        clearAll();
+        searchString = $("input:first").val();
+        console.log(searchString);
+
+        updateContent(searchType);
+
+        // switch (searchType) {
+        //     case "userchannelname":
+        //         History.pushState({ target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
+        //         userSearch();
+        //         channelSearch();
+        //         break;
+        //     case "userid":
+        //         openUser(searchString);
+        //         break;
+        //     case "channelid":
+        //         openChannel(searchString);
+        //         break;
+        //     case "videoid":
+        //         openVideo(searchString);
+        //         break;
+        // };
+    });
+
+
+    History.Adapter.bind(window, 'statechange', function() {
+        var target = $(History.getState().data.target);
+        updateContent(target.selector);
     });
 
     $(document.body).on("click", '.btn-channel', function(e) {
+
+        History.pushState({ target: "channel" }, "Channel Search", "?search=channel");
+
         var target = $(e.currentTarget);
         var channel = target[0].id.match(/ch-([a-zA-Z0-9\-]*)/);
 
@@ -52,6 +83,9 @@ $(document).ready(function() {
     });
 
     $(document.body).on("click", '.btn-user', function(e) {
+
+        History.pushState({ target: "user" }, "User Search", "?search=user");
+
         var target = $(e.currentTarget);
         var user = target[0].id.match(/us-([a-zA-Z0-9\-]*)/);
 
@@ -63,6 +97,9 @@ $(document).ready(function() {
     });
 
     $(document.body).on("click", '.btn-video', function(e) {
+
+        History.pushState({ target: "video" }, "Video Search", "?search=video");
+
         var target = $(e.currentTarget);
         var video = target[0].id.match(/vid-([a-zA-Z0-9\-]*)/);
 
@@ -118,6 +155,21 @@ $(document).ready(function() {
             e.preventDefault();
         }
     });
+
+    // $(window).on('hashchange', function() {
+    //     var hash = location.hash.substring(1); // strip the leading # symbol
+    //     // now run code based on whatever the value of 'hash' is
+    //     console.log("hash: " + hash);
+    // });
+
+    // // Bind a handler for ALL hash/state changes
+    // $.History.bind(function(state) {
+    //     // // Update the current element to indicate which state we are now on
+    //     // $current.text('Our current state is: [' + state + ']');
+    //     // // Update the page's title with our current state on the end
+    //     // document.title = document_title + ' | ' + state;
+    //     console.log("current state: " + state);
+    // });
 
 });
 
