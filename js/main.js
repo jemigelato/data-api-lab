@@ -810,7 +810,6 @@ function videosCallback(data) {
         $('#video-body').append("No videos found");
     } else {
         console.log(data);
-        // var ul = $('<ul>').appendTo('#videos');
         var results = data;
         $.each(results, function(index, video) {
             setHeading(index, "vid-" + video.id, video.id, video.title,
@@ -825,7 +824,6 @@ function videosCallback(data) {
         });
     }
 
-    //$('#videos').fadeIn();
     $('#video-panel').fadeIn();
 }
 
@@ -850,29 +848,6 @@ function commentsCallback(data) {
 
     $('#comment-panel').fadeIn();
 
-    // $('#comments').append(
-    //     $('<h2>').append('getComments')
-    // );
-    // if (data === null || $.isEmptyObject(data)) {
-    //     $('#comments').append("No comments found");
-    // } else {
-    //     console.log(data[0]);
-    //     var ul = $('<ul>').appendTo('#comments');
-    //     var results = data;
-    //     $.each(results, function(index, comment) {
-    //         ul.append(
-    //             $('<li>').append(comment.createdAt)
-    //         );
-    //         var ul2 = $('<ul>').appendTo(ul);
-    //         $.each(comment, function(index, item) {
-    //             ul2.append(
-    //                 $('<li>').append(item)
-    //             );
-    //         });
-    //     });
-    // }
-
-    // $('#comments').fadeIn();
 }
 
 function channelCommentsCallback(data) {
