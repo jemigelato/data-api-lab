@@ -24,20 +24,21 @@ $(document).ready(function() {
         switch (searchTarget) {
             case "userchannelname":
                 if (!external) {
-                    History.pushState({ _index: History.getCurrentIndex(), target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
+                    // History.pushState({ _index: History.getCurrentIndex(), target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
+                    History.pushState({ _index: History.getCurrentIndex(), target: "userchannelname", searchStr: searchString }, "User and Channel Name Search", "?search=userchannelname");
                 }
-                userSearch(searchId);
-                channelSearch(searchId);
+                userSearch();
+                channelSearch();
                 break;
             case "userid":
                 if (!external) {
-                    History.pushState({ _index: History.getCurrentIndex(), target: "userid" }, "User Search", "?search=user");
+                    History.pushState({ _index: History.getCurrentIndex(), target: "userid", searchStr: searchString }, "User Search", "?search=user");
                 }
                 openUser(searchId);
                 break;
             case "channelid":
                 if (!external) {
-                    History.pushState({ _index: History.getCurrentIndex(), target: "channelid" }, "Channel Search", "?search=channel");
+                    History.pushState({ _index: History.getCurrentIndex(), target: "channelid", searchStr: searchString }, "Channel Search", "?search=channel");
                 }
                 openChannel(searchId);
                 break;
@@ -81,9 +82,14 @@ $(document).ready(function() {
         var State = History.getState();
         var target = State.data.target;
         var tId = State.data.tId;
+        var searchStr = State.data.searchStr;
+
         var currentIndex = History.getCurrentIndex();
         var internal = (State.data._index === (currentIndex - 1));
+
         if (!internal) { // back button was pressed
+            searchString = searchStr;
+            $('#search').val(searchString);
             updateContent(target, tId, "external");
         }
     });
@@ -378,7 +384,7 @@ function searchCallback(data) {
     $('#channel-results').fadeIn();
 }
 
-function openUser(userName) { // TODO: back key handling
+function openUser(userName) {
     query = "/getInfo?key=" + apikey;
     url = userSearchUrl + userName + query;
     console.log(url);
@@ -390,7 +396,7 @@ function openUser(userName) { // TODO: back key handling
     });
 }
 
-function openChannel(chId) { // TODO: back key handling
+function openChannel(chId) {
     query = "/getInfo?key=" + apikey;
     url = channelSearchUrl + chId + query;
     console.log(url);
@@ -402,7 +408,7 @@ function openChannel(chId) { // TODO: back key handling
     });
 }
 
-function openVideo(vidId) { // TODO: back key handling
+function openVideo(vidId) {
     query = "/getInfo?key=" + apikey;
     url = videoSearchUrl + vidId + query;
     console.log(url);
