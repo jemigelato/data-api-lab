@@ -15,23 +15,37 @@ var searchType = "userchannelname";
 
 $(document).ready(function() {
 
-    var updateContent = function(searchTarget) {
+    var updateContent = function(searchTarget, targetId, external) {
 
         clearAll();
+
+        var searchId = (targetId ? targetId : searchString);
+
         switch (searchTarget) {
             case "userchannelname":
-                History.pushState({ target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
-                userSearch();
-                channelSearch();
+                if (!external) {
+                    History.pushState({ _index: History.getCurrentIndex(), target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
+                }
+                userSearch(searchId);
+                channelSearch(searchId);
                 break;
             case "userid":
-                openUser(searchString);
+                if (!external) {
+                    History.pushState({ _index: History.getCurrentIndex(), target: "userid" }, "User Search", "?search=user");
+                }
+                openUser(searchId);
                 break;
             case "channelid":
-                openChannel(searchString);
+                if (!external) {
+                    History.pushState({ _index: History.getCurrentIndex(), target: "channelid" }, "Channel Search", "?search=channel");
+                }
+                openChannel(searchId);
                 break;
             case "videoid":
-                openVideo(searchString);
+                if (!external) {
+                    History.pushState({ _index: History.getCurrentIndex(), target: "videoid" }, "Video Search", "?search=video");
+                }
+                openVideo(searchId);
                 break;
         };
     };
@@ -64,18 +78,24 @@ $(document).ready(function() {
 
 
     History.Adapter.bind(window, 'statechange', function() {
-        var target = $(History.getState().data.target);
-        updateContent(target.selector);
+        var State = History.getState();
+        var target = State.data.target;
+        var tId = State.data.tId;
+        var currentIndex = History.getCurrentIndex();
+        var internal = (State.data._index === (currentIndex - 1));
+        if (!internal) { // back button was pressed
+            updateContent(target, tId, "external");
+        }
     });
 
     $(document.body).on("click", '.btn-channel', function(e) {
-
-        History.pushState({ target: "channel" }, "Channel Search", "?search=channel");
 
         var target = $(e.currentTarget);
         var channel = target[0].id.match(/ch-([a-zA-Z0-9\-]*)/);
 
         if (channel && channel[1]) {
+
+            History.pushState({ _index: History.getCurrentIndex(), target: "channelid", tId: channel[1] }, "Channel Search", "?search=channel");
             openChannel(channel[1]);
         }
 
@@ -84,12 +104,12 @@ $(document).ready(function() {
 
     $(document.body).on("click", '.btn-user', function(e) {
 
-        History.pushState({ target: "user" }, "User Search", "?search=user");
-
         var target = $(e.currentTarget);
         var user = target[0].id.match(/us-([a-zA-Z0-9\-]*)/);
 
         if (user && user[1]) {
+
+            History.pushState({ _index: History.getCurrentIndex(), target: "userid", tId: user[1] }, "User Search", "?search=user");
             openUser(user[1]);
         }
 
@@ -98,12 +118,12 @@ $(document).ready(function() {
 
     $(document.body).on("click", '.btn-video', function(e) {
 
-        History.pushState({ target: "video" }, "Video Search", "?search=video");
-
         var target = $(e.currentTarget);
         var video = target[0].id.match(/vid-([a-zA-Z0-9\-]*)/);
 
         if (video && video[1]) {
+
+            History.pushState({ _index: History.getCurrentIndex(), target: "videoid", tId: video[1] }, "Video Search", "?search=video");
             openVideo(video[1]);
         }
 
@@ -173,7 +193,7 @@ $(document).ready(function() {
 
 });
 
-function userSearch(event) {
+function userSearch() {
 
     query = "all/search/username:like:" + searchString + "?key=" + apikey;
     url = userSearchUrl + query;
@@ -305,17 +325,19 @@ function searchCallback(data) {
                 var list = $('<ul>').appendTo('#user-results');
                 var results = userData;
                 $.each(results, function(index, user) {
-                    var anchor = $('<a>')
-                        .attr("href", "#")
-                        .append(user.name)
-                        .click(function() {
-                            openUser(user.name);
-                        });
+
+                    var anchor = $('<a>', {
+                        class: 'btn-user',
+                        id: "us-" + user.id,
+                        href: "",
+                        text: user.name
+                    });
 
                     var listItem = $('<li>').append(anchor);
                     listItem.append($('<span>')
                         .append(" (" + user.id + ") ")
                     ).addClass('list-group-item');
+
                     list.append(listItem)
                         .addClass('list-group');
                 });
@@ -328,16 +350,19 @@ function searchCallback(data) {
                 var list = $('<ul>').appendTo('#channel-results');
                 var results = channelData;
                 $.each(results, function(index, channel) {
-                    var anchor = $('<a>')
-                        .attr("href", "#")
-                        .append(channel.title)
-                        .click(function() {
-                            openChannel(channel.id);
-                        });
+
+                    var anchor = $('<a>', {
+                        class: 'btn-channel',
+                        id: "ch-" + channel.id,
+                        href: "",
+                        text: channel.title
+                    });
+
                     var listItem = $('<li>').append(anchor);
                     listItem.append($('<span>')
                         .append(" (" + channel.id + ") ")
                     ).addClass('list-group-item');
+
                     list.append(listItem)
                         .addClass('list-group');
                 });
