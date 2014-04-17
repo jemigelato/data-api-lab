@@ -24,7 +24,6 @@ $(document).ready(function() {
         switch (searchTarget) {
             case "userchannelname":
                 if (!external) {
-                    // History.pushState({ _index: History.getCurrentIndex(), target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
                     History.pushState({ _index: History.getCurrentIndex(), target: "userchannelname", searchStr: searchString }, "User and Channel Name Search", "?search=userchannelname");
                 }
                 userSearch();
@@ -59,22 +58,6 @@ $(document).ready(function() {
 
         updateContent(searchType);
 
-        // switch (searchType) {
-        //     case "userchannelname":
-        //         History.pushState({ target: "userchannelname" }, "User and Channel Name Search", "?search=userchannelname");
-        //         userSearch();
-        //         channelSearch();
-        //         break;
-        //     case "userid":
-        //         openUser(searchString);
-        //         break;
-        //     case "channelid":
-        //         openChannel(searchString);
-        //         break;
-        //     case "videoid":
-        //         openVideo(searchString);
-        //         break;
-        // };
     });
 
 
@@ -185,21 +168,6 @@ $(document).ready(function() {
             e.preventDefault();
         }
     });
-
-    // $(window).on('hashchange', function() {
-    //     var hash = location.hash.substring(1); // strip the leading # symbol
-    //     // now run code based on whatever the value of 'hash' is
-    //     console.log("hash: " + hash);
-    // });
-
-    // // Bind a handler for ALL hash/state changes
-    // $.History.bind(function(state) {
-    //     // // Update the current element to indicate which state we are now on
-    //     // $current.text('Our current state is: [' + state + ']');
-    //     // // Update the page's title with our current state on the end
-    //     // document.title = document_title + ' | ' + state;
-    //     console.log("current state: " + state);
-    // });
 
 });
 
