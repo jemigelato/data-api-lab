@@ -24,26 +24,46 @@ $(document).ready(function() {
         switch (searchTarget) {
             case "userchannelname":
                 if (!external) {
-                    History.pushState({ _index: History.getCurrentIndex(), target: "userchannelname", searchStr: searchString }, "User and Channel Name Search", "?search=userchannelname");
+                    History.pushState({
+                        _index: History.getCurrentIndex(),
+                        target: "userchannelname",
+                        searchStr: searchString,
+                        dropDown: $('#toggle-btn-label').text()
+                    }, "User and Channel Name Search", "?search=userchannelname");
                 }
                 userSearch();
                 channelSearch();
                 break;
             case "userid":
                 if (!external) {
-                    History.pushState({ _index: History.getCurrentIndex(), target: "userid", searchStr: searchString }, "User Search", "?search=user");
+                    History.pushState({
+                        _index: History.getCurrentIndex(),
+                        target: "userid",
+                        searchStr: searchString,
+                        dropDown: $('#toggle-btn-label').text()
+                    }, "User Search", "?search=user");
                 }
                 openUser(searchId);
                 break;
             case "channelid":
                 if (!external) {
-                    History.pushState({ _index: History.getCurrentIndex(), target: "channelid", searchStr: searchString }, "Channel Search", "?search=channel");
+                    History.pushState({
+                        _index: History.getCurrentIndex(),
+                        target: "channelid",
+                        searchStr: searchString,
+                        dropDown: $('#toggle-btn-label').text()
+                    }, "Channel Search", "?search=channel");
                 }
                 openChannel(searchId);
                 break;
             case "videoid":
                 if (!external) {
-                    History.pushState({ _index: History.getCurrentIndex(), target: "videoid" }, "Video Search", "?search=video");
+                    History.pushState({
+                        _index: History.getCurrentIndex(),
+                        target: "videoid",
+                        searchStr: searchString,
+                        dropDown: $('#toggle-btn-label').text()
+                    }, "Video Search", "?search=video");
                 }
                 openVideo(searchId);
                 break;
@@ -66,6 +86,7 @@ $(document).ready(function() {
         var target = State.data.target;
         var tId = State.data.tId;
         var searchStr = State.data.searchStr;
+        var dropDown = State.data.dropDown;
 
         var currentIndex = History.getCurrentIndex();
         var internal = (State.data._index === (currentIndex - 1));
@@ -73,6 +94,7 @@ $(document).ready(function() {
         if (!internal) { // back button was pressed
             searchString = searchStr;
             $('#search').val(searchString);
+            $('#toggle-btn-label').text(dropDown);
             updateContent(target, tId, "external");
         }
     });
