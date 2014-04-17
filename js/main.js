@@ -146,25 +146,29 @@ $(document).ready(function() {
                     searchType = "userchannelname";
                     $('#search').attr('placeholder', 'user or channel name')
                         .removeClass('key-numeric')
-                        .focus();
+                        .focus()
+                        .val("");
                     break;
                 case "channel-id":
                     searchType = "channelid";
                     $('#search').attr('placeholder', 'channel ID')
                         .addClass('key-numeric')
-                        .focus();
+                        .focus()
+                        .val("");
                     break;
                 case "user-id":
                     searchType = "userid";
                     $('#search').attr('placeholder', 'user ID')
                         .addClass('key-numeric')
-                        .focus();
+                        .focus()
+                        .val("");
                     break;
                 case "video-id":
                     searchType = "videoid";
                     $('#search').attr('placeholder', 'video ID')
                         .addClass('key-numeric')
-                        .focus();
+                        .focus()
+                        .val("");
                     break;
             }
         }
