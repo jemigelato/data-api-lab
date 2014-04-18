@@ -226,6 +226,9 @@ function clearAll() {
     $('#comment-panel').hide();
     $('#comment-heading').empty();
     $('#comment-body').empty();
+    $('#ss-panel').hide();
+    $('#ss-heading').empty();
+    $('#ss-body').empty();
     channelSearched = false;
     userSearched = false;
     userData = null;
@@ -614,20 +617,31 @@ function channelInfoCallback(data) {
         });
         setRow("Chat Embed Tag: ", text, '#info-body');
 
-
-        // $('<h2>', {text: "Social Stream"}).appendTo('#info-heading');
-
-
         $('#info-panel').fadeIn();
 
-        query = "/getComments?key=" + apikey;
-        url = channelSearchUrl + searchString + query;
+        // query = "/getComments?key=" + apikey;
+        // url = userSearchUrl + data.id + query;
+        url = "http://socialstream.ustream.tv/socialstream/get.json/" + results.id + "/default";
+        console.log(url);
         // send off the query
         $.ajax({
             url: url,
-            dataType: "jsonp",
-            success: channelCommentsCallback // TODO
+            dataType: "json",
+            success: socialCallback
         });
+
+        // var jsonStr = '{"payload":[{"flag":[],"timeElapsed":3881481,"text":"hello from channel page SS! ( @teacoffeeness live at http://ustre.am/110Sl)","profileNetwork":"ustream","importInfo":null,"uid":1424080918,"createdAt":1393901749,"network":[{"provider":"ustream","displayName":"jbantola017"}],"profilePictureUrl":"http://static-cdn1.ustream.tv/images/defaults/user_48x48:1.png","isOwner":false,"profileUserName":"jbantola017"},{"flag":[],"timeElapsed":3881539,"text":"SS from channel page ( @teacoffeeness live at http://ustre.am/110Sl)","profileNetwork":"ustream","importInfo":null,"uid":1424079972,"createdAt":1393901691,"network":[{"provider":"ustream","displayName":"jbantola017"}],"profilePictureUrl":"http://static-cdn1.ustream.tv/images/defaults/user_48x48:1.png","isOwner":false,"profileUserName":"jbantola017"},{"flag":["isPremium","isOwner"],"timeElapsed":4292296,"text":"another SS from channel page ( @teacoffeeness live at http://ustre.am/110Sl)","profileNetwork":"facebook","importInfo":null,"uid":1415607851,"createdAt":1393490934,"network":[{"provider":"facebook","displayName":"Jembeela Ba"},{"provider":"ustream","displayName":"jbantola02"}],"profilePictureUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn1/t5/572959_100006298364562_625599719_q.jpg","isOwner":true,"profileUserName":"Jembeela Ba"},{"flag":["isPremium","isOwner"],"timeElapsed":4292896,"text":"SS from channel page ( @teacoffeeness live at http://ustre.am/110Sl)","profileNetwork":"facebook","importInfo":null,"uid":1415605333,"createdAt":1393490334,"network":[{"provider":"facebook","displayName":"Jembeela Ba"},{"provider":"ustream","displayName":"jbantola02"}],"profilePictureUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn1/t5/572959_100006298364562_625599719_q.jpg","isOwner":true,"profileUserName":"Jembeela Ba"},{"flag":["isPremium","isOwner"],"timeElapsed":4293387,"text":"SS ( @teacoffeeness live at http://ustre.am/110Sl)","profileNetwork":"facebook","importInfo":null,"uid":1415603155,"createdAt":1393489843,"network":[{"provider":"facebook","displayName":"Jembeela Ba"},{"provider":"ustream","displayName":"jbantola02"}],"profilePictureUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn1/t5/572959_100006298364562_625599719_q.jpg","isOwner":true,"profileUserName":"Jembeela Ba"},{"flag":["isPremium","isOwner"],"timeElapsed":4293620,"text":"writing from channel page ( @teacoffeeness live at http://ustre.am/110Sl)","profileNetwork":"facebook","importInfo":null,"uid":1415602132,"createdAt":1393489610,"network":[{"provider":"facebook","displayName":"Jembeela Ba"},{"provider":"ustream","displayName":"jbantola02"}],"profilePictureUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn1/t5/572959_100006298364562_625599719_q.jpg","isOwner":true,"profileUserName":"Jembeela Ba"},{"flag":["isPremium","isOwner"],"timeElapsed":4294175,"text":"SS entry ( @teacoffeeness live at http://ustre.am/110Sl)","profileNetwork":"facebook","importInfo":null,"uid":1415599513,"createdAt":1393489055,"network":[{"provider":"facebook","displayName":"Jembeela Ba"},{"provider":"ustream","displayName":"jbantola02"}],"profilePictureUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn1/t5/572959_100006298364562_625599719_q.jpg","isOwner":true,"profileUserName":"Jembeela Ba"},{"flag":["isPremium","isOwner"],"timeElapsed":18397955,"text":"GC. jbantola02 (live at http://ustre.am/110Sl)","profileNetwork":"facebook","importInfo":null,"uid":1172690736,"createdAt":1379385275,"network":[{"provider":"facebook","displayName":"Jembeela Ba"},{"provider":"ustream","displayName":"jbantola02"}],"profilePictureUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn1/572959_100006298364562_625599719_q.jpg","isOwner":true,"profileUserName":"Jembeela Ba"}],"refreshInterval":10,"success":true,"statusUpdate":{},"range":[0,1397783230],"isSuffixCleaningNeeded":true}';
+        // var jsonData = $.parseJSON(jsonStr);
+        // socialCallback(jsonData);
+
+        // query = "/getComments?key=" + apikey;
+        // url = channelSearchUrl + searchString + query;
+        // // send off the query
+        // $.ajax({
+        //     url: url,
+        //     dataType: "jsonp",
+        //     success: channelCommentsCallback // TODO
+        // });
     }
 }
 
@@ -849,6 +863,34 @@ function commentsCallback(data) {
 
     $('#comment-panel').fadeIn();
 
+}
+
+function socialCallback(data) {
+
+    $('<h2>', { text: "Social Stream" } ).appendTo('#ss-heading');
+
+    if (!data) {
+        $('#ss-body').append("No social stream messages found");
+    } else {
+        console.log(data);
+        var results = data.payload;
+        $.each(results, function(index, ss) {
+            $('<hr>').appendTo('#ss-body');
+            setRow("Time elapsed: ", ss.timeElapsed, '#ss-body');
+            setRow("Text: ", ss.text, '#ss-body', true);
+            setRow("Profile Network: ", ss.profileNetwork, '#ss-body');
+            setRow("ID: ", ss.uid, '#ss-body');
+            setRow("Created At: ", ss.createdAt, '#ss-body');
+            setRow("Network: ", "(" + ss.network.length + ")", '#ss-body');
+            var ul = $('<ul>').appendTo('#ss-body');
+            $.each(ss.network, function(index, network){
+                ul.append($('<li>', {text: network.provider + " / " + network.displayName}));
+            });
+
+        });
+    }
+
+    $('#ss-panel').fadeIn();
 }
 
 function channelCommentsCallback(data) {
