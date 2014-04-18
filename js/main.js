@@ -213,7 +213,6 @@ function clearAll() {
     $('#title').empty();
     $('#user-results').empty();
     $('#channel-results').empty();
-    $('#info').empty();
     $('#info-panel').hide();
     $('#info-heading').empty();
     $('#info-body').empty();
@@ -221,11 +220,9 @@ function clearAll() {
     $('#chan-heading').empty();
     $('#chan-body').empty();
     $('#channels').empty();
-    $('#videos').empty();
     $('#video-panel').hide();
     $('#video-heading').empty();
     $('#video-body').empty();
-    $('#comments').empty();
     $('#comment-panel').hide();
     $('#comment-heading').empty();
     $('#comment-body').empty();
@@ -616,6 +613,10 @@ function channelInfoCallback(data) {
             disabled: true
         });
         setRow("Chat Embed Tag: ", text, '#info-body');
+
+
+        // $('<h2>', {text: "Social Stream"}).appendTo('#info-heading');
+
 
         $('#info-panel').fadeIn();
 
