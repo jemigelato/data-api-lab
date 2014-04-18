@@ -626,7 +626,7 @@ function channelInfoCallback(data) {
         // send off the query
         $.ajax({
             url: url,
-            dataType: "json",
+            dataType: "jsonp",
             success: socialCallback
         });
 
