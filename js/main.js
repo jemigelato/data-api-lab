@@ -435,12 +435,16 @@ function videoInfoCallback(data) {
 
         setRow("ID: ", results.id, '#info-body');
         setRow("User ID: ", results.user.id, '#info-body');
+        setRow("User Username: ", results.user.userName, '#info-body');
+
         anchor = $('<a>', {
             href: results.user.userName,
             text: results.user.userName,
             target: ""
         });
-        setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+
+        setRow("User info: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+
         anchor = $('<a>', {
             href: results.user.url,
             text: results.user.url,
@@ -535,12 +539,16 @@ function channelInfoCallback(data) {
 
         setRow("ID: ", results.id, '#info-body');
         setRow("User ID: ", results.user.id, '#info-body');
+        setRow("User Username: ", results.user.userName, '#info-body');
+
         anchor = $('<a>', {
             href: results.user.userName,
             text: results.user.userName,
             target: ""
         });
-        setRow("User Username: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+
+        setRow("User Info: ", anchor, '#info-body', undefined, 'btn-user', "us-" + results.user.id);
+
         anchor = $('<a>', {
             href: results.user.url,
             text: results.user.url,
