@@ -427,10 +427,8 @@ function videoInfoCallback(data) {
             thumb = '';
 
         $('<h1>', {text: results.title})
-            .append($('<small>', {
-                    text: "video"
-                }))
             .appendTo('#title');
+        $('<h4>', {text: "video "}).appendTo('h1');
         $('#title').fadeIn();
 
         $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
@@ -527,10 +525,10 @@ function channelInfoCallback(data) {
             thumb = '';
 
         $('<h1>', {text: results.title})
-            .append($('<small>', {
-                    text: "channel"
-                }))
             .appendTo('#title');
+
+        $('<h4>', {text: "channel "}).appendTo('h1');
+
         $('#title').fadeIn();
 
         $('<h2>', {text: "getInfo"}).appendTo('#info-heading');
@@ -707,12 +705,8 @@ function userInfoCallback(data) {
 
 
         $('#title').append(
-            $('<h1>').append(data.userName)
-            .append($('<small>', {
-                text: "user"
-            }))
-        )
-        ;
+            $('<h1>').append(data.userName));
+        $('<h4>', {text: "user "}).appendTo('h1');
         $('#title').fadeIn();
         $('#info-heading').append(
             $('<h2>').append('getInfo')
